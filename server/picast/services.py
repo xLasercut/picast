@@ -1,6 +1,6 @@
 import re
 
-from picast.exceptions import ErrorConstants, InvalidRequest
+from picast.exceptions import InvalidRequest, PlayerError
 from picast import app
 from picast.player import VideoPlayer
 
@@ -10,11 +10,14 @@ class AbstractService(object):
     def __init__(self, request):
         self.request = request.get_json()
         if not self.request:
-            raise InvalidRequest(ErrorConstants.EMPTY_REQUEST)
+            raise InvalidRequest(InvalidRequest.EMPTY_REQUEST)
 
     def runWorkflow(self):
         self.validateRequest()
-        self.processRequest()
+        try:
+            self.processRequest()
+        except PlayerError as e:
+            raise InvalidRequest(e.errorResponse)
 
     def validateRequest(self):
         pass
@@ -42,10 +45,10 @@ class StreamService(AbstractService):
 
     def validateRequest(self):
         if not self.streamUrl:
-            raise InvalidRequest(ErrorConstants.EMPTY_URL)
+            raise InvalidRequest(InvalidRequest.EMPTY_URL)
 
         #if not self.URL_PATTERN.match(self.streamUrl):
-        #    raise InvalidRequest(ErrorConstants.INVALID_URL.format(self.streamUrl))
+        #    raise InvalidRequest(InvalidRequest.INVALID_URL.format(self.streamUrl))
 
     def processRequest(self):
         player.playUrl(self.streamUrl)
@@ -59,15 +62,15 @@ class VolumeService(AbstractService):
 
     def validateRequest(self):
         if self.volumeLevel is None:
-            raise InvalidRequest(ErrorConstants.EMPTY_VOLUME)
+            raise InvalidRequest(InvalidRequest.EMPTY_VOLUME)
 
         try:
             self.volumeLevel = float(self.volumeLevel)
         except ValueError:
-            raise InvalidRequest(ErrorConstants.INVALID_VOLUME)
+            raise InvalidRequest(InvalidRequest.INVALID_VOLUME)
 
         if self.volumeLevel < 0 or self.volumeLevel > 10:
-            raise InvalidRequest(ErrorConstants.INVALID_VOLUME)
+            raise InvalidRequest(InvalidRequest.INVALID_VOLUME)
 
     def processRequest(self):
         player.setVolume(self.volumeLevel)
@@ -80,12 +83,12 @@ class SeekService(AbstractService):
 
     def validateRequest(self):
         if not self.seekTime:
-            raise InvalidRequest(ErrorConstants.EMPTY_SEEK)
+            raise InvalidRequest(InvalidRequest.EMPTY_SEEK)
 
         try:
             self.seekTime = int(self.seekTime)
         except ValueError:
-            raise InvalidRequest(ErrorConstants.INVALID_SEEK)
+            raise InvalidRequest(InvalidRequest.INVALID_SEEK)
 
     def processRequest(self):
         player.seek(self.seekTime)

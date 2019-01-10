@@ -16,7 +16,7 @@ def streamHandler():
         streamService.runWorkflow()
         return streamService.successResponse
     except InvalidRequest as e:
-        return e.sendErrorResponse()
+        return e.errorResponse
 
 
 @app.route("/volume", methods=["POST"])
@@ -26,7 +26,7 @@ def volumeHandler():
         volumeService.runWorkflow()
         return streamService.successResponse
     except InvalidRequest as e:
-        return e.sendErrorResponse()
+        return e.errorResponse
 
 
 @app.route("/seek", methods=["POST"])
@@ -36,7 +36,7 @@ def seekHandler():
         seekService.runWorkflow()
         return seekService.successResponse
     except InvalidRequest as e:
-        return e.sendErrorResponse()
+        return e.errorResponse
 
 @app.route("/control", methods=["POST"])
 def controlHandler():
@@ -45,4 +45,4 @@ def controlHandler():
         controlService.runWorkflow()
         return controlService.successResponse
     except InvalidRequest as e:
-        return e.sendErrorResponse()
+        return e.errorResponse
