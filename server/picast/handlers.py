@@ -13,9 +13,8 @@ def statusHandler():
 def streamHandler():
     try:
         streamService = StreamService(request)
-        streamService.validateRequest()
-        streamService.runCommand()
-        return "ok", 200
+        streamService.runWorkflow()
+        return streamService.successResponse
     except InvalidRequest as e:
         return e.sendErrorResponse()
 
@@ -24,9 +23,8 @@ def streamHandler():
 def volumeHandler():
     try:
         volumeService = VolumeService(request)
-        volumeService.validateRequest()
-        volumeService.runCommand()
-        return "OK", 200
+        volumeService.runWorkflow()
+        return streamService.successResponse
     except InvalidRequest as e:
         return e.sendErrorResponse()
 
@@ -35,9 +33,8 @@ def volumeHandler():
 def seekHandler():
     try:
         seekService = SeekService(request)
-        seekService.validateRequest()
-        seekService.runCommand()
-        return "OK", 200
+        seekService.runWorkflow()
+        return seekService.successResponse
     except InvalidRequest as e:
         return e.sendErrorResponse()
 
@@ -45,8 +42,7 @@ def seekHandler():
 def controlHandler():
     try:
         controlService = ControlService(request)
-        controlService.validateRequest()
-        controlService.runCommand()
-        return "OK", 200
+        controlService.runWorkflow()
+        return controlService.successResponse
     except InvalidRequest as e:
         return e.sendErrorResponse()

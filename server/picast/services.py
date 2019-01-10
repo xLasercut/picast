@@ -14,13 +14,17 @@ class AbstractService(object):
 
     def runWorkflow(self):
         self.validateRequest()
-        self.runCommand()
+        self.processRequest()
 
     def validateRequest(self):
         pass
 
-    def runCommand(self):
+    def processRequest(self):
         pass
+
+    @property
+    def successResponse(self):
+        return self.successMsg, 200
 
 class StreamService(AbstractService):
 
@@ -43,8 +47,9 @@ class StreamService(AbstractService):
         #if not self.URL_PATTERN.match(self.streamUrl):
         #    raise InvalidRequest(ErrorConstants.INVALID_URL.format(self.streamUrl))
 
-    def runCommand(self):
+    def processRequest(self):
         player.playUrl(self.streamUrl)
+        self.successMsg = "url {0} stream success".format(self.streamUrl)
 
 class VolumeService(AbstractService):
 
@@ -64,7 +69,9 @@ class VolumeService(AbstractService):
         if self.volumeLevel < 0 or self.volumeLevel > 10:
             raise InvalidRequest(ErrorConstants.INVALID_VOLUME)
 
-
+    def processRequest(self):
+        player.setVolume(self.volumeLevel)
+        self.successMsg = "volume set to {0}".format(self.volumeLevel)
 
 class SeekService(AbstractService):
     def __init__(self, request):
@@ -80,8 +87,10 @@ class SeekService(AbstractService):
         except ValueError:
             raise InvalidRequest(ErrorConstants.INVALID_SEEK)
 
-    def runCommand(self):
+    def processRequest(self):
         player.seek(self.seekTime)
+        self.successMsg = "seek"
+
 
 class ControlService(AbstractService):
     def __init__(self, request):
@@ -92,8 +101,9 @@ class ControlService(AbstractService):
         if not self.controlOption:
             raise InvalidRequest("No options given")
 
-    def runCommand(self):
+    def processRequest(self):
         if self.controlOption == "stop":
             player.stop()
         elif self.controlOption == "pause":
             player.playPause()
+        self.successMsg = "control"
