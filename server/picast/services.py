@@ -77,13 +77,22 @@ class VolumeService(AbstractService):
         self.successMsg = "volume set to {0}".format(self.volumeLevel)
 
 class SeekService(AbstractService):
+    CONTROL_MAP = {
+        "relative": player.seek,
+        "absolute": player.setPosition
+    }
+
     def __init__(self, request):
         super(SeekService, self).__init__(request)
         self.seekTime = self.request.get("seekTime")
+        self.seekOption = self.request.get("seekOption")
 
     def validateRequest(self):
-        if not self.seekTime:
+        if not self.seekTime or not self.seekOption:
             raise InvalidRequest(InvalidRequest.EMPTY_SEEK)
+
+        if self.seekOption not in self.CONTROL_MAP:
+            raise InvalidRequest("Invalid seek option")
 
         try:
             self.seekTime = int(self.seekTime)
@@ -96,6 +105,11 @@ class SeekService(AbstractService):
 
 
 class ControlService(AbstractService):
+    CONTROL_MAP = {
+        "stop": player.stop,
+        "pause": player.playPause
+    }
+
     def __init__(self, request):
         super(ControlService, self).__init__(request)
         self.controlOption = self.request.get("controlOption")
@@ -104,9 +118,9 @@ class ControlService(AbstractService):
         if not self.controlOption:
             raise InvalidRequest("No options given")
 
+        if self.controlOption not in self.CONTROL_MAP:
+            raise InvalidRequest("Invalid control option")
+
     def processRequest(self):
-        if self.controlOption == "stop":
-            player.stop()
-        elif self.controlOption == "pause":
-            player.playPause()
+        self.CONTROL_MAP[self.controlOption]()
         self.successMsg = "control"

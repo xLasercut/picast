@@ -30,7 +30,7 @@ class VideoPlayer(object):
 
     def setPosition(self, position):
         self._checkPlayerExist()
-        if position > self._videoLength:
+        if position > self._videoLength or position < 0:
             raise PlayerError(PlayerError.INVALID_VIDEO_POSITION)
         self.player.set_position(position)
 
