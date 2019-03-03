@@ -1,10 +1,12 @@
 from omxplayer.player import OMXPlayer
 from picast.exceptions import PlayerError
+from picast.logging import LogObject
 
 class VideoPlayer(object):
 
     def __init__(self):
         self.player = None
+        self.logger = LogObject('Video Player')
 
     def playUrl(self, url):
         if not self.player:
@@ -31,14 +33,18 @@ class VideoPlayer(object):
     def setPosition(self, position):
         self._checkPlayerExist()
         if position > self._videoLength or position < 0:
-            raise PlayerError(PlayerError.INVALID_VIDEO_POSITION)
+            self._raisePlayerError('PLAYER0001', {'position': position})
         self.player.set_position(position)
 
     def _checkPlayerExist(self):
         if not self.player:
-            raise PlayerError(PlayerError.EMPTY_VIDEO)
+            self._raisePlayerError('PLAYER0002')
 
     @property
     def _videoLength(self):
         metadata = self.player.metadata()
-        return metadata.get("mpris:length")/1000000
+        return metadata.get('mpris:length')/1000000
+
+    def _raisePlayerError(self, logReference, variablesDict={}):
+        returnMsg = self.logger.writeAndReturnLog(logReference, variablesDict)
+        raise PlayerError(returnMsg)

@@ -1,8 +1,11 @@
-import re
+import youtube_dl
 
 from picast.exceptions import InvalidRequest, PlayerError
 from picast import app
 from picast.player import VideoPlayer
+from picast.logging import LogObject
+
+from flask import jsonify
 
 player = VideoPlayer()
 
@@ -10,117 +13,152 @@ class AbstractService(object):
     def __init__(self, request):
         self.request = request.get_json()
         if not self.request:
-            raise InvalidRequest(InvalidRequest.EMPTY_REQUEST)
+            self._raiseServiceError('REQ0001')
 
     def runWorkflow(self):
-        self.validateRequest()
+        self._validateRequest()
         try:
-            self.processRequest()
+            self._processRequest()
         except PlayerError as e:
             raise InvalidRequest(e.errorResponse)
-
-    def validateRequest(self):
-        pass
-
-    def processRequest(self):
-        pass
 
     @property
     def successResponse(self):
         return self.successMsg, 200
 
-class StreamService(AbstractService):
+    def _validateRequest(self):
+        pass
 
-    URL_PATTERN = re.compile(
-        r'^(?:http|ftp)s?://' # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
-        r'localhost|' #localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
-        r'(?::\d+)?' # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    def _processRequest(self):
+        pass
+
+    def _raiseServiceError(self, logReference, variablesDict={}):
+        returnMsg = self.logger.writeAndReturnLog(logReference, variablesDict)
+        raise InvalidRequest(returnMsg)
+
+class StreamService(AbstractService):
+    VIDEO_QUALITY = {
+        '240p': {'height': 240, 'width': 320},
+        '360p': {'height': 360, 'width': 480 },
+        '480p': {'height': 480, 'width': 720},
+        '720p': {'height': 720, 'width': 1280},
+        '1080p': {'height': 1080, 'width': 1920}
+    }
+
+    VIDEO_EXTENTIONS = ['mp4']
 
     def __init__(self, request):
+        self.logger = LogObject('Stream Service')
         super(StreamService, self).__init__(request)
-        self.streamUrl = self.request.get("streamUrl")
+        self.streamUrl = self.request.get('streamUrl')
+        self.streamQuality = self.request.get('streamQuality', '720p')
 
-    def validateRequest(self):
+    def _validateRequest(self):
         if not self.streamUrl:
-            raise InvalidRequest(InvalidRequest.EMPTY_URL)
+            self._raiseServiceError('URL0002')
 
-        #if not self.URL_PATTERN.match(self.streamUrl):
-        #    raise InvalidRequest(InvalidRequest.INVALID_URL.format(self.streamUrl))
+        if self.streamQuality not in self.VIDEO_QUALITY:
+            self._raiseServiceError('QUALITY0001', {'quality': self.streamQuality})
 
-    def processRequest(self):
+        self.streamUrl = self._extractVideoUrl()
+        if not self.streamUrl:
+            self._raiseServiceError('URL0003')
+
+        self.successMsg = self.streamUrl
+
+    def _processRequest(self):
         player.playUrl(self.streamUrl)
-        self.successMsg = "url {0} stream success".format(self.streamUrl)
+        self.successMsg = self.logger.writeAndReturnLog('URL0004', {'url': self.streamUrl})
+
+    def _extractVideoUrl(self):
+        with youtube_dl.YoutubeDL({}) as ydl:
+            infoDict = ydl.extract_info(self.streamUrl, download=False)
+            for video in infoDict.get('formats'):
+                if self._isCorrectFormat(video):
+                    return video.get('url')
+            return None
+
+    def _isCorrectFormat(self, video):
+        videoQuality = {
+            'height': video.get('height'),
+            'width': video.get('width')
+        }
+        requiredQualiy = self.VIDEO_QUALITY.get(self.streamQuality)
+        ext = video.get('ext')
+        if videoQuality == requiredQualiy and ext in self.VIDEO_EXTENTIONS:
+            return True
+        return False
 
 class VolumeService(AbstractService):
 
     def __init__(self, request):
+        self.logger = LogObject('Volume Service')
         super(VolumeService, self).__init__(request)
-        self.volumeLevel = self.request.get("volumeLevel")
+        self.volumeLevel = self.request.get('volumeLevel')
 
-    def validateRequest(self):
+    def _validateRequest(self):
         if self.volumeLevel is None:
-            raise InvalidRequest(InvalidRequest.EMPTY_VOLUME)
+            self._raiseServiceError('VOL0002')
 
         try:
             self.volumeLevel = float(self.volumeLevel)
         except ValueError:
-            raise InvalidRequest(InvalidRequest.INVALID_VOLUME)
+            self._raiseServiceError('VOL0001')
 
         if self.volumeLevel < 0 or self.volumeLevel > 10:
-            raise InvalidRequest(InvalidRequest.INVALID_VOLUME)
+            self._raiseServiceError('VOL0001')
 
-    def processRequest(self):
+    def _processRequest(self):
         player.setVolume(self.volumeLevel)
-        self.successMsg = "volume set to {0}".format(self.volumeLevel)
+        self.successMsg = 'volume set to {0}'.format(self.volumeLevel)
 
 class SeekService(AbstractService):
     CONTROL_MAP = {
-        "relative": player.seek,
-        "absolute": player.setPosition
+        'relative': player.seek,
+        'absolute': player.setPosition
     }
 
     def __init__(self, request):
+        self.logger = LogObject('Seek Service')
         super(SeekService, self).__init__(request)
-        self.seekTime = self.request.get("seekTime")
-        self.seekOption = self.request.get("seekOption")
+        self.seekTime = self.request.get('seekTime')
+        self.seekOption = self.request.get('seekOption')
 
-    def validateRequest(self):
+    def _validateRequest(self):
         if not self.seekTime or not self.seekOption:
-            raise InvalidRequest(InvalidRequest.EMPTY_SEEK)
+            self._raiseServiceError('SEEK0002')
 
         if self.seekOption not in self.CONTROL_MAP:
-            raise InvalidRequest("Invalid seek option")
+            self._raiseServiceError('SEEK0003', {'option': self.seekOption})
 
         try:
             self.seekTime = int(self.seekTime)
         except ValueError:
-            raise InvalidRequest(InvalidRequest.INVALID_SEEK)
+            self._raiseServiceError('SEEK0001')
 
-    def processRequest(self):
+    def _processRequest(self):
         player.seek(self.seekTime)
-        self.successMsg = "seek"
+        self.successMsg = 'seek'
 
 
 class ControlService(AbstractService):
     CONTROL_MAP = {
-        "stop": player.stop,
-        "pause": player.playPause
+        'stop': player.stop,
+        'pause': player.playPause
     }
 
     def __init__(self, request):
+        self.logger = LogObject('Control Service')
         super(ControlService, self).__init__(request)
-        self.controlOption = self.request.get("controlOption")
+        self.controlOption = self.request.get('controlOption')
 
-    def validateRequest(self):
+    def _validateRequest(self):
         if not self.controlOption:
-            raise InvalidRequest("No options given")
+            self._raiseServiceError('CTRL0001')
 
         if self.controlOption not in self.CONTROL_MAP:
-            raise InvalidRequest("Invalid control option")
+            self._raiseServiceError('CTRL0002', {'option': self.controlOption})
 
-    def processRequest(self):
+    def _processRequest(self):
         self.CONTROL_MAP[self.controlOption]()
-        self.successMsg = "control"
+        self.successMsg = 'control'

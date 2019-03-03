@@ -1,26 +1,18 @@
-class InvalidRequest(Exception):
-    EMPTY_REQUEST = "No request body found"
-    INVALID_URL = "'{0}' is not a valid URL"
-    EMPTY_URL = "No URL supplied"
-    INVALID_VOLUME = "Volume must be a number between 0 and 10"
-    EMPTY_VOLUME = "No volume value supplied"
-    INVALID_SEEK = "Seek Time must be a number"
-    EMPTY_SEEK = "No Seek Time supplied"
-
-    def __init__(self, message):
+class AbstractException(Exception):
+    def __init__(self, message, httpCode=None):
         self.message = message
+        self.httpCode = httpCode
 
     @property
     def errorResponse(self):
-        return self.message, 403
+        if not self.httpCode:
+            return self.message
+        return self.message, self.httpCode
 
-class PlayerError(Exception):
-    EMPTY_VIDEO = "Cannot issue control commands when no video is playing"
-    INVALID_VIDEO_POSITION = "Seek position outside video length"
-
+class InvalidRequest(AbstractException):
     def __init__(self, message):
-        self.message = message
+        super(InvalidRequest, self).__init__(message, 403)
 
-    @property
-    def errorResponse(self):
-        return self.message
+class PlayerError(AbstractException):
+    def __init__(self, message):
+        super(PlayerError, self).__init__(message)

@@ -9,5 +9,7 @@ Jinja2==2.10
 MarkupSafe==1.1.0
 omxplayer-wrapper==0.3.2
 pathlib2==2.3.3
+pystache==0.5.4
 six==1.12.0
 Werkzeug==0.14.1
+youtube-dl==2019.1.16

@@ -1,15 +1,14 @@
 from flask import request, jsonify
-from picast import app
+from picast import app, appLogger
 from picast.exceptions import InvalidRequest
 from picast.services import StreamService, VolumeService, SeekService, ControlService
-import re
 
-@app.route("/status", methods=["GET"])
+@app.route('/status', methods=["GET"])
 def statusHandler():
-    return jsonify("OK"), 200
+    return jsonify('OK'), 200
 
 
-@app.route("/stream", methods=["POST"])
+@app.route('/stream', methods=['POST'])
 def streamHandler():
     try:
         streamService = StreamService(request)
@@ -19,17 +18,17 @@ def streamHandler():
         return e.errorResponse
 
 
-@app.route("/volume", methods=["POST"])
+@app.route('/volume', methods=['POST'])
 def volumeHandler():
     try:
         volumeService = VolumeService(request)
         volumeService.runWorkflow()
-        return streamService.successResponse
+        return volumeService.successResponse
     except InvalidRequest as e:
         return e.errorResponse
 
 
-@app.route("/seek", methods=["POST"])
+@app.route('/seek', methods=['POST'])
 def seekHandler():
     try:
         seekService = SeekService(request)
@@ -38,7 +37,7 @@ def seekHandler():
     except InvalidRequest as e:
         return e.errorResponse
 
-@app.route("/control", methods=["POST"])
+@app.route('/control', methods=['POST'])
 def controlHandler():
     try:
         controlService = ControlService(request)
