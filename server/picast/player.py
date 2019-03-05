@@ -17,10 +17,12 @@ class VideoPlayer(object):
     def stop(self):
         self._checkPlayerExist()
         self.player.quit()
+        return self.logger.writeAndReturnLog('CTRL0004')
 
     def setVolume(self, volume):
         self._checkPlayerExist()
         self.player.set_volume(volume)
+        return self.logger.writeAndReturnLog('VOL0003', {'volume': volume})
 
     def playPause(self):
         self._checkPlayerExist()
@@ -32,18 +34,26 @@ class VideoPlayer(object):
 
     def setPosition(self, position):
         self._checkPlayerExist()
-        if position > self._videoLength or position < 0:
-            self._raisePlayerError('PLAYER0001', {'position': position})
+        if position > self.videoLength() or position < 0:
+            self._raisePlayerError('SEEK0004', {'position': position})
         self.player.set_position(position)
 
     def _checkPlayerExist(self):
         if not self.player:
-            self._raisePlayerError('PLAYER0002')
+            self._raisePlayerError('CTRL0003')
 
-    @property
-    def _videoLength(self):
+    
+    def videoLength(self):
         metadata = self.player.metadata()
         return metadata.get('mpris:length')/1000000
+    
+    
+    def videoVolume(self):
+        return self.player.volume()
+    
+    
+    def playbackStatus(self):
+        return self.player.playback_status()
 
     def _raisePlayerError(self, logReference, variablesDict={}):
         returnMsg = self.logger.writeAndReturnLog(logReference, variablesDict)

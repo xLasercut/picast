@@ -9,6 +9,4 @@ app.logger.removeHandler(default_handler)
 
 from picast.logging import LogObject
 
-appLogger = LogObject('PI Cast')
-
-from picast.handlers import statusHandler, streamHandler
+from picast.handlers import statusHandler, streamHandler, seekHandler, volumeHandler, controlHandler

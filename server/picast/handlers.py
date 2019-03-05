@@ -1,11 +1,16 @@
-from flask import request, jsonify
-from picast import app, appLogger
+from flask import request
+from picast import app
 from picast.exceptions import InvalidRequest
-from picast.services import StreamService, VolumeService, SeekService, ControlService
+from picast.services import StreamService, VolumeService, SeekService, ControlService, StatusService
 
 @app.route('/status', methods=["GET"])
 def statusHandler():
-    return jsonify('OK'), 200
+    try:
+        statusService = StatusService(request)
+        statusService.runWorkflow()
+        return statusService.successResponse
+    except InvalidRequest as e:
+        return e.errorResponse
 
 
 @app.route('/stream', methods=['POST'])
