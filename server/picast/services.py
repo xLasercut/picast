@@ -63,10 +63,13 @@ class StatusService(AbstractService):
         if not self.requiredStatus:
             self.successMsg = 'OK'
         else:
-            returnDict = {}
-            for status in self.requiredStatus:
-                returnDict[status] = self.STATUS_MAP[status]()
-            self.successMsg = jsonify(returnDict)
+            try:
+                returnDict = {}
+                for status in self.requiredStatus:
+                    returnDict[status] = self.STATUS_MAP[status]()
+                self.successMsg = jsonify(returnDict)
+            except PlayerError as e:
+                raise InvalidRequest(e.errorResponse)
         
     def _checkEmptyRequestBody(self):
         if not self.request:

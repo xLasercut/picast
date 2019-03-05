@@ -44,15 +44,18 @@ class VideoPlayer(object):
 
     
     def videoLength(self):
+        self._checkPlayerExist()
         metadata = self.player.metadata()
         return metadata.get('mpris:length')/1000000
     
     
     def videoVolume(self):
+        self._checkPlayerExist()
         return self.player.volume()
     
     
     def playbackStatus(self):
+        self._checkPlayerExist()
         return self.player.playback_status()
 
     def _raisePlayerError(self, logReference, variablesDict={}):
