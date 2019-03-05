@@ -103,7 +103,7 @@ class StreamService(AbstractService):
 
         self._parseUrl()
                 
-        if not self.parsedUrl:
+        if not self.streamUrl:
             self._raiseServiceError('URL0003')
 
     def _processRequest(self):
