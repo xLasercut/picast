@@ -42,7 +42,8 @@ class StatusService(AbstractService):
     STATUS_MAP = {
         'length': player.videoLength,
         'volume': player.videoVolume,
-        'playback': player.playbackStatus
+        'playback': player.playbackStatus,
+        'position': player.videoPosition
     }
     
     

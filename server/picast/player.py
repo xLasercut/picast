@@ -41,18 +41,18 @@ class VideoPlayer(object):
     def _checkPlayerExist(self):
         if not self.player:
             self._raisePlayerError('CTRL0003')
-
+            
+    def videoPosition(self):
+        self._checkPlayerExist()
+        return self.player.position()
     
     def videoLength(self):
         self._checkPlayerExist()
-        metadata = self.player.metadata()
-        return metadata.get('mpris:length')/1000000
-    
+        return self.player.duration() 
     
     def videoVolume(self):
         self._checkPlayerExist()
         return self.player.volume()
-    
     
     def playbackStatus(self):
         self._checkPlayerExist()
