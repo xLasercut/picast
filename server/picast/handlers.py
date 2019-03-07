@@ -1,7 +1,7 @@
 from flask import request
 from picast import app
 from picast.exceptions import InvalidRequest
-from picast.services import StreamService, VolumeService, SeekService, ControlService, StatusService
+from picast.services import StreamService, VolumeService, SeekService, PlaybackService, StatusService
 
 @app.route('/status', methods=["GET"])
 def statusHandler():
@@ -45,8 +45,8 @@ def seekHandler():
 @app.route('/control', methods=['POST'])
 def controlHandler():
     try:
-        controlService = ControlService(request)
-        controlService.runWorkflow()
-        return controlService.successResponse
+        playbackService = PlaybackService(request)
+        playbackService.runWorkflow()
+        return playbackService.successResponse
     except InvalidRequest as e:
         return e.errorResponse

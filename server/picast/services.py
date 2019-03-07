@@ -14,6 +14,7 @@ class AbstractService(object):
         self._checkEmptyRequestBody()
 
     def runWorkflow(self):
+        self._parseRequest()
         self._validateRequest()
         try:
             self._processRequest()
@@ -27,6 +28,9 @@ class AbstractService(object):
     def _checkEmptyRequestBody(self):
         if not self.request:
             self._raiseServiceError('REQ0001')
+    
+    def _parseRequest(self):
+        pass
 
     def _validateRequest(self):
         pass
@@ -39,17 +43,13 @@ class AbstractService(object):
         raise InvalidRequest(returnMsg)
     
 class StatusService(AbstractService):
-    STATUS_MAP = {
-        'length': player.videoLength,
-        'volume': player.videoVolume,
-        'playback': player.playbackStatus,
-        'position': player.videoPosition
-    }
-    
     
     def __init__(self, request):
         self.logger = LogObject('Status Service')
         super(StatusService, self).__init__(request)
+        
+        
+    def _parseRequest(self):
         self.requiredStatus = self.request.get('status', [])
         
     def _validateRequest(self):
@@ -57,7 +57,7 @@ class StatusService(AbstractService):
             self._raiseServiceError('STAT0002')
         
         for status in self.requiredStatus:
-            if status not in self.STATUS_MAP:
+            if status not in player.statusMap:
                 self._raiseServiceError('STAT0001', {'status': status})
                 
     def _processRequest(self):
@@ -67,7 +67,7 @@ class StatusService(AbstractService):
             try:
                 returnDict = {}
                 for status in self.requiredStatus:
-                    returnDict[status] = self.STATUS_MAP[status]()
+                    returnDict[status] = player.videoStatus(status)
                 self.successMsg = jsonify(returnDict)
             except PlayerError as e:
                 raise InvalidRequest(e.errorResponse)
@@ -90,11 +90,13 @@ class StreamService(AbstractService):
     def __init__(self, request):
         self.logger = LogObject('Stream Service')
         super(StreamService, self).__init__(request)
+        self.streamUrl = None
+
+    def _parseRequest(self):
         self.url = self.request.get('url')
         self.quality = self.request.get('quality', '720p')
         self.format = self.request.get('format', 'mp4')
-        self.streamUrl = ''
-
+        
     def _validateRequest(self):
         if not self.url:
             self._raiseServiceError('URL0002')
@@ -141,6 +143,9 @@ class VolumeService(AbstractService):
     def __init__(self, request):
         self.logger = LogObject('Volume Service')
         super(VolumeService, self).__init__(request)
+        
+        
+    def _parseRequest(self):
         self.volume = self.request.get('volume')
 
     def _validateRequest(self):
@@ -167,11 +172,15 @@ class SeekService(AbstractService):
     def __init__(self, request):
         self.logger = LogObject('Seek Service')
         super(SeekService, self).__init__(request)
+        
+    def _parseRequest(self):
         self.time = self.request.get('time')
-        self.option = self.request.get('option')
+        self.option = self.requst.get('option')
+        if not self.option:
+            self.option = 'relative'
 
     def _validateRequest(self):
-        if not self.time or not self.option:
+        if not self.time:
             self._raiseServiceError('SEEK0002')
 
         if self.option not in self.CONTROL_MAP:
@@ -183,11 +192,10 @@ class SeekService(AbstractService):
             self._raiseServiceError('SEEK0001')
 
     def _processRequest(self):
-        player.seek(self.time)
-        self.successMsg = 'seek'
+        self.successMsg = self.CONTROL_MAP[self.option](self.time)
 
 
-class ControlService(AbstractService):
+class PlaybackService(AbstractService):
     CONTROL_MAP = {
         'stop': player.stop,
         'playpause': player.playPause
@@ -195,7 +203,9 @@ class ControlService(AbstractService):
 
     def __init__(self, request):
         self.logger = LogObject('Control Service')
-        super(ControlService, self).__init__(request)
+        super(PlaybackService, self).__init__(request)
+        
+    def _parseRequest(self):
         self.option = self.request.get('option')
 
     def _validateRequest(self):
