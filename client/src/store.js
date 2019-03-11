@@ -4,13 +4,16 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
+    state: {
+        disabled: true,
+        baseUrl: ""
+    },
+    mutations: {
+        toggleControl(state, status) {
+            state.disabled = status
+        }
+    },
+    actions: {
 
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  }
+    }
 })
