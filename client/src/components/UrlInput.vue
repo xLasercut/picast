@@ -1,17 +1,35 @@
 <template>
     <el-row>
-        <el-input :disabled="$store.state.disabled">
-            <el-button slot="append" :disabled="$store.state.disabled">Play Video</el-button>
-        </el-input>
+        <el-col :span="20">
+            <el-input :disabled="$store.state.disabled" v-model.trim="videoUrl" clearable></el-input>
+        </el-col>
+        <el-col :span="4">
+            <el-button :disabled="$store.state.disabled" @click="sendVideoUrl()">Play Video</el-button>
+        </el-col>
     </el-row>
 </template>
 
 <script>
+    import axios from 'axios'
+    import NotificationHelper from '@/mixins/notification-helper.js'
+
     export default {
-        props: ["disabled", "value"],
         data () {
             return {
-                disableControl: this.disabled
+                videoUrl: ""
+            }
+        },
+        mixins: [NotificationHelper],
+        methods: {
+            sendVideoUrl() {
+                axios.post(this.$store.getters.streamUrl, {"url": this.videoUrl})
+                .then((response) => {
+                    console.log(response)
+                    this.$store.commit("togglePlaybackStatus", true)
+                })
+                .catch((error) => {
+                    this.notifyError(error.response.data)
+                })
             }
         }
     }

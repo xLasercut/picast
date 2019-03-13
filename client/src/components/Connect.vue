@@ -1,21 +1,48 @@
 <template>
-    <el-row>
-        <el-input v-model="picastBase">
-            <el-button slot="append" @click="checkConnection()">Connect</el-button>
-        </el-input>
+    <el-row :gutter="10" type="flex" justify="center">
+        <el-col :span="7">
+            <el-input v-model.trim="host" clearable>
+                <template slot="prepend">Host</template>
+            </el-input>
+        </el-col>
+        <el-col :span="7">
+            <el-input v-model.trim="port" maxlength="4" clearable>
+                <template slot="prepend" >Port</template>
+            </el-input>
+        </el-col>
+        <el-col :span="4">
+            <el-button @click="checkConnection()" type="primary">Connect</el-button>
+        </el-col>
     </el-row>
 </template>
 
 <script>
+    import axios from 'axios'
+    import NotificationHelper from '@/mixins/notification-helper.js'
+
     export default {
         data() {
             return {
-                picastBase: ""
+                port: 8001,
+                host: ""
             }
         },
+        mixins: [NotificationHelper],
         methods: {
             checkConnection() {
-                this.$store.commit('toggleControl', false)
+                axios.get(`${this.baseUrl()}/status`)
+                .then(response => {
+                    this.$store.commit("toggleControl", false)
+                    this.$store.commit("setBaseUrl", this.baseUrl())
+                    this.notifySuccess("Connected to picast server")
+                })
+                .catch(error => {
+                    this.notifyError("Could not connect to picast server")
+                })
+
+            },
+            baseUrl() {
+                return `http://${this.host}:${this.port}`
             }
         }
     }

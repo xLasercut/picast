@@ -8,42 +8,69 @@ class VideoPlayer(object):
         self.player = None
         self.logger = LogObject('Video Player')
         
-        self.statusMap = {
+        self.STATUS_MAP = {
             'volume': self._videoVolume,
             'length': self._videoLength,
             'playback': self._playbackStatus,
             'position': self._videoPosition
         }
+        
+        self.CONTROL_MAP = {
+            'playpause': self._playPause,
+            'stop': self._stop,
+            'mute': self._mute,
+            'unmute': self._unmute
+        }
 
+        self.SEEK_MAP = {
+            'relative': self._seek,
+            'absolute': self._setPosition
+        }
 
     def playUrl(self, url):
         if not self.player:
             self.player = OMXPlayer(url)
         else:
             self.player.load(url)
-
-    def stop(self):
-        self._checkPlayerExist()
-        self.player.quit()
-        return self.logger.writeAndReturnLog('CTRL0004')
-
+            
     def setVolume(self, volume):
         self._checkPlayerExist()
         self.player.set_volume(volume)
         return self.logger.writeAndReturnLog('VOL0003', {'volume': volume})
-
-    def playPause(self):
+    
+    def sendCommand(self, command):
         self._checkPlayerExist()
+        try:
+            return self.controlMap[command]()
+        except AttributeError:
+            raise PlayerError('CTRL0003')
+
+    def _stop(self):
+        self.player.quit()
+        return self.logger.writeAndReturnLog('CTRL0004')
+    
+    def _mute(self):
+        self.player.mute()
+        return self.logger.writeAndReturnLog('CTRL0006')
+
+    def _unmute(self):
+        self.player.unmute()
+        return self.logger.writeAndReturnLog('CTRL0007')
+
+    def _playPause(self):
         self.player.play_pause()
-
-    def seek(self, seekTime):
+        return self.logger.writeAndReturnLog('CTRL0005')
+    
+    def seek(self, option, time):
         self._checkPlayerExist()
+        return self.seekMap[option](time)
+
+    def _seek(self, seekTime):
         self.player.seek(seekTime)
         return self.logger.writeAndReturnLog('SEEK0005', {'position': seekTime})
 
-    def setPosition(self, position):
-        self._checkPlayerExist()
-        if position > self.videoLength() or position < 0:
+    def _setPosition(self, position):
+        if position > self._videoLength() or position < 0:
             self._raisePlayerError('SEEK0004', {'position': position})
         self.player.set_position(position)
         return self.logger.writeAndReturnLog('SEEK0006', {'position': position})

@@ -57,7 +57,7 @@ class StatusService(AbstractService):
             self._raiseServiceError('STAT0002')
         
         for status in self.requiredStatus:
-            if status not in player.statusMap:
+            if status not in player.STATUS_MAP:
                 self._raiseServiceError('STAT0001', {'status': status})
                 
     def _processRequest(self):
@@ -117,7 +117,10 @@ class StreamService(AbstractService):
         if self.VIDEO_ENDING.search(self.url):
             self.streamUrl = self.url
             
-        self.streamUrl = self._extractVideoUrl()
+        try:
+            self.streamUrl = self._extractVideoUrl()
+        except:
+            self.streamUrl = None
 
     def _extractVideoUrl(self):
         with youtube_dl.YoutubeDL({}) as ydl:
@@ -164,18 +167,13 @@ class VolumeService(AbstractService):
         self.successMsg = player.setVolume(self.volume)
 
 class SeekService(AbstractService):
-    CONTROL_MAP = {
-        'relative': player.seek,
-        'absolute': player.setPosition
-    }
-
     def __init__(self, request):
         self.logger = LogObject('Seek Service')
         super(SeekService, self).__init__(request)
         
     def _parseRequest(self):
         self.time = self.request.get('time')
-        self.option = self.requst.get('option')
+        self.option = self.request.get('option')
         if not self.option:
             self.option = 'relative'
 
@@ -183,7 +181,7 @@ class SeekService(AbstractService):
         if not self.time:
             self._raiseServiceError('SEEK0002')
 
-        if self.option not in self.CONTROL_MAP:
+        if self.option not in player.SEEK_MAP:
             self._raiseServiceError('SEEK0003', {'option': self.option})
 
         try:
@@ -192,18 +190,13 @@ class SeekService(AbstractService):
             self._raiseServiceError('SEEK0001')
 
     def _processRequest(self):
-        self.successMsg = self.CONTROL_MAP[self.option](self.time)
+        self.successMsg = player.seek(self.option, self.time)
 
 
-class PlaybackService(AbstractService):
-    CONTROL_MAP = {
-        'stop': player.stop,
-        'playpause': player.playPause
-    }
-
+class ControlService(AbstractService):
     def __init__(self, request):
         self.logger = LogObject('Control Service')
-        super(PlaybackService, self).__init__(request)
+        super(ControlService, self).__init__(request)
         
     def _parseRequest(self):
         self.option = self.request.get('option')
@@ -212,8 +205,8 @@ class PlaybackService(AbstractService):
         if not self.option:
             self._raiseServiceError('CTRL0001')
 
-        if self.option not in self.CONTROL_MAP:
+        if self.option not in player.CONTROL_MAP:
             self._raiseServiceError('CTRL0002', {'option': self.option})
 
     def _processRequest(self):
-        self.successMsg = self.CONTROL_MAP[self.option]()
+        self.successMsg = player.sendCommand(self.option)
