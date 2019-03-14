@@ -116,11 +116,11 @@ class StreamService(AbstractService):
     def _parseUrl(self):
         if self.VIDEO_ENDING.search(self.url):
             self.streamUrl = self.url
-            
-        try:
-            self.streamUrl = self._extractVideoUrl()
-        except:
-            self.streamUrl = None
+        else:
+            try:
+                self.streamUrl = self._extractVideoUrl()
+            except:
+                self.streamUrl = None
 
     def _extractVideoUrl(self):
         with youtube_dl.YoutubeDL({}) as ydl:

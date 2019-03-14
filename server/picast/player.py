@@ -32,7 +32,7 @@ class VideoPlayer(object):
 
     def playUrl(self, url):
         if not self.player:
-            self.player = OMXPlayer(url, args=self.args)
+            self.player = OMXPlayer(url)
         else:
             self.player.load(url)
             
