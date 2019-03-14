@@ -138,7 +138,7 @@ class StreamService(AbstractService):
         audio = video.get('acodec')
         requiredQualiy = self.VIDEO_QUALITY.get(self.quality)
         ext = video.get('ext')
-        if videoQuality == requiredQualiy and ext == self.format and audio:
+        if videoQuality == requiredQualiy and ext == self.format and audio != 'none':
             return True
         return False
 
