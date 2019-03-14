@@ -1,15 +1,31 @@
 <template>
     <el-row>
-        <el-button :disabled="$store.state.disabled" @click="playbackControl('playpause')">
+        <el-button
+            :disabled="$store.state.disableControl"
+            @click="playbackControl('playpause')"
+            type="primary"
+        >
             <font-awesome-icon :icon="playbackStatus"/>
         </el-button>
-        <el-button :disabled="$store.state.disabled" @click="playbackControl('stop')">
+        <el-button
+            :disabled="$store.state.disableControl"
+            @click="playbackControl('stop')"
+            type="danger"
+        >
             <font-awesome-icon icon="stop"/>
         </el-button>
-        <el-button :disabled="$store.state.disabled" @click="seekCommand(-30, 'relative')">
+        <el-button
+            :disabled="$store.state.disableControl"
+            @click="stepPosition(-30)"
+            type="warning"
+        >
             <font-awesome-icon icon="step-backward"/>
         </el-button>
-        <el-button :disabled="$store.state.disabled" @click="seekCommand(30, 'relative')">
+        <el-button
+            :disabled="$store.state.disableControl"
+            @click="stepPosition(30)"
+            type="warning"
+        >
             <font-awesome-icon icon="step-forward"/>
         </el-button>
     </el-row>
@@ -28,12 +44,21 @@
         ],
         data() {
             return {
-                playbackStatus: "play"
+                playbackStatus: 'play'
             }
         },
         methods: {
             playbackControl(command) {
                 this.controlCommand(command)
+                .then((res) => {
+
+                })
+                .catch((e) => {
+                    this.notifyError(e.response.data)
+                })
+            },
+            stepPosition(time){
+                this.seekCommand(time, 'relative')
                 .then((res) => {
 
                 })
@@ -48,5 +73,6 @@
 <style scoped>
     .el-row {
         margin: 20px;
+        margin-bottom: 50px;
     }
 </style>

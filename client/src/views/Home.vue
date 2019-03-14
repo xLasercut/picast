@@ -22,14 +22,6 @@
             VideoSlider,
             ControlButtons,
             VolumeButtons
-        },
-        data () {
-            return {
-
-            }
-        },
-        methods: {
-
         }
     }
 </script>

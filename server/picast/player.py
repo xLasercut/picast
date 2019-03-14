@@ -41,7 +41,7 @@ class VideoPlayer(object):
     def sendCommand(self, command):
         self._checkPlayerExist()
         try:
-            return self.controlMap[command]()
+            return self.CONTROL_MAP[command]()
         except AttributeError:
             raise PlayerError('CTRL0003')
 
@@ -63,7 +63,7 @@ class VideoPlayer(object):
     
     def seek(self, option, time):
         self._checkPlayerExist()
-        return self.seekMap[option](time)
+        return self.SEEK_MAP[option](time)
 
     def _seek(self, seekTime):
         self.player.seek(seekTime)
@@ -80,11 +80,12 @@ class VideoPlayer(object):
             self._raisePlayerError('CTRL0003')
             
     def videoStatus(self, status):
-        self._checkPlayerExist()
+        if not self.player:
+            self._raisePlayerError('STAT0003')
         try:
-            return self.statusMap[status]()
+            return self.STATUS_MAP[status]()
         except AttributeError:
-            raise PlayerError('CTRL0003')
+            raise PlayerError('STAT0003')
         
     def _videoPosition(self):
         return self.player.position()

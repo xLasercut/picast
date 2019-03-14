@@ -8,22 +8,28 @@ export default {
     methods: {
         controlCommand(command) {
             var body = {
-                "option": command
+                'option': command
             }
             return axios.post(this.$store.getters.controlUrl, body)
         },
         seekCommand(time, option) {
             var body = {
-                "time": time,
-                "option": option
+                'time': time,
+                'option': option
             }
             return axios.post(this.$store.getters.seekUrl, body)
         },
         volumeCommand(volume) {
             var body = {
-                "volume": volume
+                'volume': volume
             }
             return axios.post(this.$store.getters.volumeUrl, body)
+        },
+        getVideoStats(stats) {
+            var body = {
+                'status': stats
+            }
+            return axios.post(this.$store.getters.statusUrl, body)
         }
     }
 }

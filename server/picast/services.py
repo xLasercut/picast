@@ -178,7 +178,7 @@ class SeekService(AbstractService):
             self.option = 'relative'
 
     def _validateRequest(self):
-        if not self.time:
+        if self.time is None:
             self._raiseServiceError('SEEK0002')
 
         if self.option not in player.SEEK_MAP:

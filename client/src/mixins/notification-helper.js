@@ -2,20 +2,20 @@ export default {
     methods: {
         notifySuccess(msg) {
             this.$message({
-                title: "Success",
+                title: 'Success',
                 message: msg,
-                type: "success",
-                customClass: "notificationBanner",
+                type: 'success',
+                customClass: 'notificationBanner',
                 duration: 8000,
                 showClose: true
             })
         },
         notifyError(msg) {
             this.$message({
-                title: "Error",
+                title: 'Error',
                 message: msg,
-                customClass: "notificationBanner",
-                type: "error",
+                customClass: 'notificationBanner',
+                type: 'error',
                 duration: 8000,
                 showClose: true
             })

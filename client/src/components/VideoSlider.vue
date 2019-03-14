@@ -1,14 +1,16 @@
 <template>
-    <el-row>
-        <el-col :span="19">
-            <el-slider
-                v-model="videoPosition"
-                :disabled="$store.state.disabled"
-                :min="0"
-                :max="100"
-                :format-tooltip="convertToHHMMSS"
-                @change="seekCommand(videoPosition, 'absolute')"
-            ></el-slider>
+    <el-row :gutter="10" type="flex" justify="center">
+        <el-col :span="15">
+            <div class="sliderContainer" @mousedown="pauseUpdate()">
+                <el-slider
+                    v-model="videoPosition"
+                    :disabled="$store.state.disableControl"
+                    :min="0"
+                    :max="videoLength"
+                    :format-tooltip="convertToHHMMSS"
+                    @change="setPosition()"
+                ></el-slider>
+            </div>
         </el-col>
         <el-col :span="5" class="videoTime">
             {{convertToHHMMSS(videoPosition)}}/{{convertToHHMMSS(videoLength)}}
@@ -19,6 +21,7 @@
 <script>
     import axios from 'axios'
     import ApiConnector from '@/mixins/api-connector.js'
+    import StatusUpdater from '@/mixins/status-updater.js'
 
     export default {
         data () {
@@ -28,7 +31,8 @@
             }
         },
         mixins: [
-            ApiConnector
+            ApiConnector,
+            StatusUpdater
         ],
         methods: {
             numHours(time) {
@@ -40,7 +44,7 @@
                 return this.formatTime(minutes)
             },
             numSeconds(time) {
-                var seconds = time % 60
+                var seconds = Math.floor(time % 60)
                 return this.formatTime(seconds)
             },
             formatTime(time) {
@@ -55,24 +59,41 @@
                 var seconds = this.numSeconds(time)
                 return `${hours}:${mins}:${seconds}`
             },
-            getVideoStats() {
-                if (this.$store.state.playbackStatus) {
-                    axios.post(this.$store.getters.statusUrl, {"status": ["length", "position"]})
+            updateVideoStats() {
+                if (this.$store.getters.canUpdateStatus) {
+                    this.getVideoStats(['length', 'position'])
                     .then((response) => {
-                        console.log(response)
+                        var stats = response.data
+                        this.videoLength = stats.length
+                        this.videoPosition = stats.position
                     })
                     .catch((e) => {
                         console.log(e.response.data)
-                        if (e.response.status === 403) {
-                            this.$store.commit("togglePlaybackStatus", false)
+                        var statusCode = e.response.status
+                        var errorMsg = e.response.data
+
+                        if (statusCode === 403 && errorMsg === 'Cannot retrieve stats when no video is playing') {
+                            this.playbackFalse()
+                        }
+                        else {
+                            this.notifyError(errorMsg)
                         }
                     })
                 }
+            },
+            setPosition() {
+                this.seekCommand(this.videoPosition, 'absolute')
+                .then((res) => {
+                    console.log(res)
+                })
+                .catch((e) => {
+                    this.notifyError(e.response.data)
+                })
             }
         },
         mounted() {
             setInterval(() => {
-                this.getVideoStats()
+                this.updateVideoStats()
             }, 1000)
         }
     }
@@ -81,7 +102,7 @@
 <style scoped>
     .el-row {
         margin: 20px;
-        margin-left: 30px;
+        margin-bottom: 50px;
     }
 
     .videoTime {

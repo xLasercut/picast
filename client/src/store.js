@@ -5,19 +5,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        disabled: true,
-        baseUrl: "",
-        playbackStatus: false
+        disableControl: true,
+        baseUrl: '',
+        playbackStatus: true,
+        pauseUpdate: false
     },
     mutations: {
-        toggleControl(state, status) {
-            state.disabled = status
+        setDisableControl(state, status) {
+            state.disableControl = status
         },
         setBaseUrl(state, url) {
             state.baseUrl = url
         },
-        togglePlaybackStatus(state, status) {
+        setPlaybackStatus(state, status) {
             state.playbackStatus = status
+        },
+        setPauseUpdate(state, status) {
+            state.pauseUpdate = status
         }
     },
     getters: {
@@ -35,6 +39,9 @@ export default new Vuex.Store({
         },
         statusUrl: (state) => {
             return `${state.baseUrl}/status`
+        },
+        canUpdateStatus: (state) => {
+            return (state.playbackStatus && !state.disableControl && !state.pauseUpdate)
         }
     },
     actions: {
