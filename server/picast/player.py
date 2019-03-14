@@ -19,7 +19,9 @@ class VideoPlayer(object):
             'playpause': self._playPause,
             'stop': self._stop,
             'mute': self._mute,
-            'unmute': self._unmute
+            'unmute': self._unmute,
+            'play': self._play,
+            'pause': self._pause
         }
 
         self.SEEK_MAP = {
@@ -60,6 +62,14 @@ class VideoPlayer(object):
     def _playPause(self):
         self.player.play_pause()
         return self.logger.writeAndReturnLog('CTRL0005')
+
+    def _play(self):
+        self.player.play()
+        return self.logger.writeAndReturnLog('CTRL0008')
+
+    def _pause(self)@
+        self.player.pause()
+        return self.logger.writeAndReturnLog('CTRL0009')
     
     def seek(self, option, time):
         self._checkPlayerExist()
@@ -85,7 +95,7 @@ class VideoPlayer(object):
         try:
             return self.STATUS_MAP[status]()
         except AttributeError:
-            raise PlayerError('STAT0003')
+           self._raisePlayerError('STAT0003')
         
     def _videoPosition(self):
         return self.player.position()

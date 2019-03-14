@@ -2,7 +2,7 @@
     <el-row>
         <el-button
             :disabled="$store.state.disableControl"
-            @click="playbackControl('playpause')"
+            @click="playpauseVideo()"
             type="primary"
         >
             <font-awesome-icon :icon="playbackStatus"/>
@@ -51,18 +51,33 @@
             playbackControl(command) {
                 this.controlCommand(command)
                 .then((res) => {
+                    this.notifySuccess(res.data)
+                })
+                .catch((e) => {
+                    this.notifyError(e.response.data)
+                })
+            },
+            stepPosition(time) {
+                this.seekCommand(time, 'relative')
+                .then((res) => {
 
                 })
                 .catch((e) => {
                     this.notifyError(e.response.data)
                 })
             },
-            stepPosition(time){
-                this.seekCommand(time, 'relative')
+            playpauseVideo() {
+                if (this.playbackStatus === 'play') {
+                    var command = 'pause'
+                }
+                else {
+                    var command = 'play'
+                }
+                this.controlCommand(command)
                 .then((res) => {
-
+                    this.playbackStatus = command
                 })
-                .catch((e) => {
+                .cat((e) => {
                     this.notifyError(e.response.data)
                 })
             }
