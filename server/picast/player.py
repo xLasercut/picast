@@ -95,7 +95,7 @@ class VideoPlayer(object):
             self._raisePlayerError('STAT0003')
         try:
             return self.STATUS_MAP[status]()
-        except AttributeError, DbusException:
+        except (AttributeError, DbusException):
            self._raisePlayerError('STAT0003')
         
     def _videoPosition(self):
