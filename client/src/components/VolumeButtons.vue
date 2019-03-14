@@ -77,6 +77,7 @@
             setVolume() {
                 this.volumeCommand(this.volume)
                 .then((res) => {
+                    this.notifySuccess(res.data)
                 })
                 .catch((e) => {
                     this.notifyError(e.response.data)

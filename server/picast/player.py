@@ -7,6 +7,7 @@ class VideoPlayer(object):
     def __init__(self):
         self.player = None
         self.logger = LogObject('Video Player')
+        self.args = ['-o', 'hdmi', '-b']
         
         self.STATUS_MAP = {
             'volume': self._videoVolume,
@@ -31,7 +32,7 @@ class VideoPlayer(object):
 
     def playUrl(self, url):
         if not self.player:
-            self.player = OMXPlayer(url)
+            self.player = OMXPlayer(url, args=self.args)
         else:
             self.player.load(url)
             

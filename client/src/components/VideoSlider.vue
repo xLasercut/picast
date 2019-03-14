@@ -74,6 +74,8 @@
 
                         if (statusCode === 403 && errorMsg === 'Cannot retrieve stats when no video is playing') {
                             this.playbackFalse()
+                            this.videoLength = 0
+                            this.videoPosition = 0
                         }
                         else {
                             this.notifyError(errorMsg)
@@ -94,7 +96,7 @@
         mounted() {
             setInterval(() => {
                 this.updateVideoStats()
-            }, 1000)
+            }, 5000)
         }
     }
 </script>

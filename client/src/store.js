@@ -8,7 +8,8 @@ export default new Vuex.Store({
         disableControl: true,
         baseUrl: '',
         playbackStatus: true,
-        pauseUpdate: false
+        pauseUpdate: false,
+        commandLoading: false
     },
     mutations: {
         setDisableControl(state, status) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
         },
         setPauseUpdate(state, status) {
             state.pauseUpdate = status
+        },
+        setCommandLoading(state, status) {
+            state.commandLoading = status
         }
     },
     getters: {
