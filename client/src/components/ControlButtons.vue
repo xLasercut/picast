@@ -2,10 +2,17 @@
     <el-row>
         <el-button
             :disabled="$store.state.disableControl"
-            @click="playpauseVideo()"
+            @click="playbackControl('play')"
             type="primary"
         >
-            <font-awesome-icon :icon="playbackStatus"/>
+            <font-awesome-icon icon="play"/>
+        </el-button>
+        <el-button
+            :disabled="$store.state.disableControl"
+            @click="playbackControl('pause')"
+            type="primary"
+        >
+            <font-awesome-icon icon="pause"/>
         </el-button>
         <el-button
             :disabled="$store.state.disableControl"
@@ -42,11 +49,6 @@
         mixins: [
             ApiConnector
         ],
-        data() {
-            return {
-                playbackStatus: 'play'
-            }
-        },
         methods: {
             playbackControl(command) {
                 this.controlCommand(command)
@@ -60,24 +62,9 @@
             stepPosition(time) {
                 this.seekCommand(time, 'relative')
                 .then((res) => {
-
+                    this.notifySuccess(res.data)
                 })
                 .catch((e) => {
-                    this.notifyError(e.response.data)
-                })
-            },
-            playpauseVideo() {
-                if (this.playbackStatus === 'play') {
-                    var command = 'pause'
-                }
-                else {
-                    var command = 'play'
-                }
-                this.controlCommand(command)
-                .then((res) => {
-                    this.playbackStatus = command
-                })
-                .cat((e) => {
                     this.notifyError(e.response.data)
                 })
             }

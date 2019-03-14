@@ -66,6 +66,7 @@
                         var stats = response.data
                         this.videoLength = stats.length
                         this.videoPosition = stats.position
+                        this.notifySuccess(response.data)
                     })
                     .catch((e) => {
                         console.log(e.response.data)
@@ -84,7 +85,7 @@
             setPosition() {
                 this.seekCommand(this.videoPosition, 'absolute')
                 .then((res) => {
-                    console.log(res)
+                    this.notifySuccess(res.data)
                 })
                 .catch((e) => {
                     this.notifyError(e.response.data)

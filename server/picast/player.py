@@ -1,6 +1,7 @@
 from omxplayer.player import OMXPlayer
 from picast.exceptions import PlayerError
 from picast.logging import LogObject
+from dbus.exceptions import DBusException
 
 class VideoPlayer(object):
 
@@ -45,7 +46,7 @@ class VideoPlayer(object):
         try:
             return self.CONTROL_MAP[command]()
         except AttributeError:
-            raise PlayerError('CTRL0003')
+            self._raisePlayerError('CTRL0003')
 
     def _stop(self):
         self.player.quit()
@@ -94,7 +95,7 @@ class VideoPlayer(object):
             self._raisePlayerError('STAT0003')
         try:
             return self.STATUS_MAP[status]()
-        except AttributeError:
+        except AttributeError, DbusException:
            self._raisePlayerError('STAT0003')
         
     def _videoPosition(self):
