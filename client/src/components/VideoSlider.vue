@@ -66,7 +66,6 @@
                         var stats = response.data
                         this.videoLength = stats.length
                         this.videoPosition = stats.position
-                        this.notifySuccess(response.data)
                     })
                     .catch((e) => {
                         console.log(e.response.data)
