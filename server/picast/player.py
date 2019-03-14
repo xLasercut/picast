@@ -67,7 +67,7 @@ class VideoPlayer(object):
         self.player.play()
         return self.logger.writeAndReturnLog('CTRL0008')
 
-    def _pause(self)@
+    def _pause(self):
         self.player.pause()
         return self.logger.writeAndReturnLog('CTRL0009')
     
