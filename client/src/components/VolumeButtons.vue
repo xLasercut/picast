@@ -12,9 +12,10 @@
                     v-model="volume"
                     :disabled="$store.state.disableControl"
                     :min="0"
-                    :max="10"
+                    :max="2"
+                    :step="0.2"
+                    :format-tooltip="convertToWhole"
                     @change="setVolume()"
-                    show-input
                 ></el-slider>
             </div>
         </el-col>
@@ -24,15 +25,13 @@
 <script>
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
     import ApiConnector from '@/mixins/api-connector.js'
-    import StatusUpdater from '@/mixins/status-updater.js'
 
     export default {
         components: {
             FontAwesomeIcon
         },
         mixins: [
-            ApiConnector,
-            StatusUpdater
+            ApiConnector
         ],
         data() {
             return {
@@ -56,38 +55,43 @@
                 }
             },
             toggleMute() {
+                this.$emit('loadingTrue')
                 if (this.muted) {
                     this.controlCommand('unmute')
                     .then((res) => {
                         this.muted = false
+                        this.notifySuccess(res.data)
+                        this.$emit('loadingFalse')
                     })
                     .catch((e) => {
                         this.notifyError(e.response.data)
+                        this.$emit('loadingFalse')
                     })
-                }
-
-                this.controlCommand('mute')
-                .then((res) => {
-                    this.muted = true
-                })
-                .catch((e) => {
-                    this.notifyError(e.response.data)
-                })
+                } 
+                else {
+                    this.controlCommand('mute')
+                    .then((res) => {
+                        this.muted = true
+                        this.notifySuccess(res.data)
+                        this.$emit('loadingFalse')
+                    })
+                    .catch((e) => {
+                        this.notifyError(e.response.data)
+                        this.$emit('loadingFalse')
+                    })
+                }                
             },
             setVolume() {
                 this.volumeCommand(this.volume)
-                .then((res) => {
-                    this.notifySuccess(res.data)
-                })
-                .catch((e) => {
-                    this.notifyError(e.response.data)
-                })
+            },
+            convertToWhole(volume) {
+                return Math.ceil(volume/0.2)
             },
             updateVolumeStats() {
                 if (this.$store.getters.canUpdateStatus) {
                     this.getVideoStats(['volume'])
                     .then((res) => {
-
+                        this.volume = res.data.volume
                     })
                     .catch((e) => {
                         console.log(e.response.data)
@@ -95,7 +99,7 @@
                         var errorMsg = e.response.data
 
                         if (statusCode === 403 && errorMsg === 'Cannot retrieve stats when no video is playing') {
-                            this.playbackFalse()
+                            this.$store.commit('playbackFalse')
                         }
                         else {
                             this.notifyError(errorMsg)

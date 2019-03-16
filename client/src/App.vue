@@ -1,17 +1,12 @@
 <template>
-    <div id="app" @mouseup="unpauseUpdate()">
+    <div id="app" @mouseup="$store.commit('unpauseUpdate')">
         <router-view></router-view>
     </div>
 </template>
 
 <script>
-    import StatusUpdater from '@/mixins/status-updater.js'
-
     export default {
-        name: 'app',
-        mixins: [
-            StatusUpdater
-        ]
+        name: 'app'
     }
 </script>
 

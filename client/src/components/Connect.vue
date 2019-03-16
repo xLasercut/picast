@@ -11,7 +11,10 @@
             </el-input>
         </el-col>
         <el-col :span="4">
-            <el-button @click="checkConnection()" type="primary">Connect</el-button>
+            <el-button
+                @click="checkConnection()"
+                type="primary"
+            >Connect</el-button>
         </el-col>
     </el-row>
 </template>
@@ -32,16 +35,18 @@
         ],
         methods: {
             checkConnection() {
+                this.$emit('loadingTrue')
                 axios.get(`${this.baseUrl()}/status`)
-                .then(response => {
-                    this.$store.commit('setDisableControl', false)
+                .then((res) => {
+                    this.$store.commit('enableVidControl')
                     this.$store.commit('setBaseUrl', this.baseUrl())
                     this.notifySuccess('Connected to picast server')
+                    this.$emit('loadingFalse')
                 })
-                .catch(error => {
+                .catch((e) => {
                     this.notifyError('Could not connect to picast server')
+                    this.$emit('loadingFalse')
                 })
-
             },
             baseUrl() {
                 return `http://${this.host}:${this.port}`

@@ -1,10 +1,10 @@
 <template>
     <el-row :gutter="10" type="flex" justify="center">
         <el-col :span="15">
-            <div class="sliderContainer" @mousedown="pauseUpdate()">
+            <div class="sliderContainer" @mousedown="$store.commit('pauseUpdate')">
                 <el-slider
                     v-model="videoPosition"
-                    :disabled="$store.state.disableControl"
+                    :disabled="$store.state.disabled"
                     :min="0"
                     :max="videoLength"
                     :format-tooltip="convertToHHMMSS"
@@ -19,9 +19,7 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import ApiConnector from '@/mixins/api-connector.js'
-    import StatusUpdater from '@/mixins/status-updater.js'
 
     export default {
         data () {
@@ -31,8 +29,7 @@
             }
         },
         mixins: [
-            ApiConnector,
-            StatusUpdater
+            ApiConnector
         ],
         methods: {
             numHours(time) {
@@ -73,7 +70,7 @@
                         var errorMsg = e.response.data
 
                         if (statusCode === 403 && errorMsg === 'Cannot retrieve stats when no video is playing') {
-                            this.playbackFalse()
+                            this.$store.commit('playbackFalse')
                             this.videoLength = 0
                             this.videoPosition = 0
                         }
@@ -85,12 +82,6 @@
             },
             setPosition() {
                 this.seekCommand(this.videoPosition, 'absolute')
-                .then((res) => {
-                    this.notifySuccess(res.data)
-                })
-                .catch((e) => {
-                    this.notifyError(e.response.data)
-                })
             }
         },
         mounted() {

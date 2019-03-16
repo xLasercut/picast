@@ -1,36 +1,36 @@
 <template>
     <el-row>
         <el-button
-            :disabled="$store.state.disableControl"
+            :disabled="$store.state.disabled"
             @click="playbackControl('play')"
             type="primary"
         >
             <font-awesome-icon icon="play"/>
         </el-button>
         <el-button
-            :disabled="$store.state.disableControl"
+            :disabled="$store.state.disabled"
             @click="playbackControl('pause')"
             type="primary"
         >
             <font-awesome-icon icon="pause"/>
         </el-button>
         <el-button
-            :disabled="$store.state.disableControl"
+            :disabled="$store.state.disabled"
             @click="playbackControl('stop')"
             type="danger"
         >
             <font-awesome-icon icon="stop"/>
         </el-button>
         <el-button
-            :disabled="$store.state.disableControl"
-            @click="stepPosition(-30)"
+            :disabled="$store.state.disabled"
+            @click="seekCommand(-30, 'relative')"
             type="warning"
         >
             <font-awesome-icon icon="step-backward"/>
         </el-button>
         <el-button
-            :disabled="$store.state.disableControl"
-            @click="stepPosition(30)"
+            :disabled="$store.state.disabled"
+            @click="seekCommand(30, 'relative')"
             type="warning"
         >
             <font-awesome-icon icon="step-forward"/>
@@ -51,21 +51,15 @@
         ],
         methods: {
             playbackControl(command) {
+                this.$emit('loadingTrue')
                 this.controlCommand(command)
                 .then((res) => {
                     this.notifySuccess(res.data)
+                    this.$emit('loadingFalse')
                 })
                 .catch((e) => {
                     this.notifyError(e.response.data)
-                })
-            },
-            stepPosition(time) {
-                this.seekCommand(time, 'relative')
-                .then((res) => {
-                    this.notifySuccess(res.data)
-                })
-                .catch((e) => {
-                    this.notifyError(e.response.data)
+                    this.$emit('loadingFalse')
                 })
             }
         }

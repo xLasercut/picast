@@ -1,10 +1,10 @@
 <template>
     <el-main class="home">
-        <connect></connect>
-        <url-input></url-input>
-        <video-slider></video-slider>
-        <control-buttons></control-buttons>
-        <volume-buttons></volume-buttons>
+        <connect @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></connect>
+        <url-input @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></url-input>
+        <video-slider @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></video-slider>
+        <control-buttons @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></control-buttons>
+        <volume-buttons @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></volume-buttons>
     </el-main>
 </template>
 
@@ -22,6 +22,19 @@
             VideoSlider,
             ControlButtons,
             VolumeButtons
+        },
+        data() {
+            return {
+                loading: ''
+            }
+        },
+        methods: {
+            loadingTrue() {
+                this.loading = this.$loading()
+            },
+            loadingFalse() {
+                this.loading.close()
+            }
         }
     }
 </script>
