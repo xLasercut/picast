@@ -1,4 +1,6 @@
-FROM lasercut/raspbian-stretch-lite
+FROM node:10.12.0-alpine
 LABEL maintainer='xLasercut'
+
+RUN apk update && apk upgrade
 
 CMD ['/bin/bash']
