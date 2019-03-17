@@ -21,4 +21,4 @@ WORKDIR $WORK_DIR
 EXPOSE ${PORT}
 
 
-CMD ['/bin/bash/', 'python3', 'main.py']
+CMD ["python3", "main.py"]
