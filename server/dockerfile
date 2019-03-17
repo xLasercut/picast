@@ -7,10 +7,11 @@ ENV LOG_PATH $WORK_DIR/log/picast.log
 
 COPY ./requirements.txt $WORK_DIR/requirements.txt
 
-RUN apt-get update && \
+RUN apt-get update && apt-get upgrade &&\
  apt-get install -y \
- omxplayer && \
- pip3 install -r requirements.txt && \
+ omxplayer\
+ python3-pip &&\
+ pip3 install -r requirements.txt &&\
  mkdir $WORK_DIR/log
 
 COPY . $WORK_DIR/.
