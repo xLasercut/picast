@@ -72,11 +72,7 @@ shift $((OPTIND -1))
 
 export REQUEST_HOST=$hostIp
 
-if [[ -z $container ]]; then
-    cmd="sudo -E docker-compose up"
-else
-    cmd="sudo -E docker-compose up ${container}"
-fi
+cmd="sudo -E docker-compose up"
 
 if [[ $recreate = true ]]; then
     cmd+=" --force-recreate"
@@ -84,6 +80,11 @@ fi
 
 if [[ ! $debug = true ]]; then
     cmd+=" -d"
+fi
+
+
+if [[ !-z $container ]]; then
+    cmd+=" ${container}"
 fi
 
 $cmd
