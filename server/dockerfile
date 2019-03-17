@@ -7,7 +7,7 @@ ENV LOG_PATH $WORK_DIR/log/picast.log
 
 COPY ./requirements.txt $WORK_DIR/requirements.txt
 
-RUN apt-get update && apt-get upgrade &&\
+RUN apt-get update && apt-get upgrade -y &&\
  apt-get install -y \
  omxplayer\
  python3-pip &&\
