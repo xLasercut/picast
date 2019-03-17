@@ -1,6 +1,17 @@
 FROM node:10.12.0-alpine
 LABEL maintainer='xLasercut'
 
-RUN apk update && apk upgrade
+ARG WORK_DIR=/home
+
+RUN apk update && apk upgrade \
+ && apk -q add curl \
+ && apk -q add bash \
+ && apk -q add bash-completion \
+ #install node packages
+ && npm install -g http-server \
+ #purge cache
+ && rm -rf /var/cache/apk/* \
+ # run install node build dependencies
+ && mkdir $WORK_DIR
 
 CMD ['/bin/bash']

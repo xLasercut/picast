@@ -1,7 +1,6 @@
 version: '3'
 services:
     picast-server:
-        restart: always
         build:
             context: ./server/
         environment:
@@ -10,7 +9,6 @@ services:
         ports:
             - 8000:8000
     picast-client:
-        restart: always
         build:
             context: ./client/
         environment:
