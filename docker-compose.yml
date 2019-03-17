@@ -8,6 +8,11 @@ services:
             - PORT=8000
         ports:
             - 8000:8000
+        volumes:
+            - /opt/vc:/opt/vc
+        devices:
+            - /dev/vchiq:/dev/vchiq
+            - /dev/fb0:/dev/fb0
     picast-client:
         build:
             context: ./client/
