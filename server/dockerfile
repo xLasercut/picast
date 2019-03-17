@@ -11,7 +11,7 @@ RUN apt-get update && \
  apt-get install -y \
  omxplayer\
  python3-pip &&\
- pip3 install -r requirements.txt &&\
+ pip3 install -r $WORK_DIR/requirements.txt &&\
  mkdir $WORK_DIR/log
 
 COPY . $WORK_DIR/.
