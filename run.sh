@@ -2,27 +2,6 @@
 
 hostIp="127.0.0.1"
 
-red='\033[0;31m'
-end='\033[0m'
-green='\033[0;32m'
-
-function printMsg () {
-    printf "\n"
-    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
-    echo -e $1
-    printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
-    printf "\n"
-}
-
-function checkSuccess () {
-    if [[ $? = 0 ]]; then
-        printMsg "${green}$1 SUCCESS${end}"
-    else
-        printMsg "${red}$1 FAILED${end}"
-        exit $?
-    fi
-}
-
 function createDirectories () {
     for directory in $@
     do

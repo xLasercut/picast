@@ -5,7 +5,7 @@ ARG WORK_DIR=/home/picastserver
 
 ENV LOG_PATH $WORK_DIR/log/picast.log
 
-COPY ./requirements.txt $WORK_DIR/requirements.txt
+COPY requirements.txt $WORK_DIR/requirements.txt
 
 RUN apt-get update && \
  apt-get install -y \

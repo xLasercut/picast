@@ -15,7 +15,8 @@ RUN apk update && apk upgrade \
 
 WORKDIR $WORK_DIR
 
-COPY ./dist/. $WORK_DIR/dist/.
+COPY dist $WORK_DIR/dist/.
+COPY start.sh $WORK_DIR/.
 
 EXPOSE ${PORT}
 
