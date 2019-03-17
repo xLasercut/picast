@@ -26,8 +26,8 @@
     export default {
         data() {
             return {
-                port: 8001,
-                host: ''
+                port: 8000,
+                host: env.REQUEST_HOST
             }
         },
         mixins: [
