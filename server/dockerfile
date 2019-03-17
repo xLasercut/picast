@@ -1,4 +1,4 @@
-FROM lasercut/raspbian-stretch-lite
+FROM lasercut/raspbian-stretch-lite:18-11-13
 LABEL maintainer='xLasercut'
 
 ARG WORK_DIR='/home'
