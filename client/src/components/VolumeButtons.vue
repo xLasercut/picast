@@ -7,7 +7,7 @@
             ><font-awesome-icon :icon="volumeIcon()"/></el-button>
         </el-col>
         <el-col :span="8">
-            <div @mousedown="pauseUpdate()">
+            <div @mousedown="$store.commit('pauseUpdate')">
                 <el-slider
                     v-model="volume"
                     :disabled="$store.state.disableControl"
