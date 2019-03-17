@@ -10,8 +10,6 @@ RUN apk update && apk upgrade \
  #install node packages
  && npm install -g http-server \
  #purge cache
- && rm -rf /var/cache/apk/* \
- # run install node build dependencies
- && mkdir $WORK_DIR
+ && rm -rf /var/cache/apk/*
 
 CMD ['/bin/bash']
