@@ -1,7 +1,7 @@
 FROM lasercut/raspbian-stretch-lite:18-11-13
 LABEL maintainer='xLasercut'
 
-ARG WORK_DIR='/home'
+ARG WORK_DIR=/home/picastserver
 
 ENV LOG_PATH $WORK_DIR/log/picast.log
 
@@ -9,7 +9,15 @@ COPY ./requirements.txt $WORK_DIR/requirements.txt
 
 RUN apt-get update && \
  apt-get install -y \
- omxplayer
+ omxplayer && \
+ pip3 install -r requirements.txt && \
+ mkdir $WORK_DIR/log
+
+COPY . $WORK_DIR/.
+
+WORKDIR $WORK_DIR
+
+EXPOSE ${PORT}
 
 
-CMD ['/bin/bash']
+CMD ['python3', 'main.py']
