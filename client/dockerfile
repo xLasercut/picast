@@ -1,7 +1,7 @@
 FROM node:10.12.0-alpine
-LABEL maintainer='xLasercut'
+LABEL maintainer="xLasercut"
 
-ARG WORK_DIR=/home
+ARG WORK_DIR=/home/picastclient
 
 RUN apk update && apk upgrade \
  && apk -q add curl \
@@ -10,6 +10,13 @@ RUN apk update && apk upgrade \
  #install node packages
  && npm install -g http-server \
  #purge cache
- && rm -rf /var/cache/apk/*
+ && rm -rf /var/cache/apk/* && \
+ mkdir $WORK_DIR
 
-CMD ['/bin/bash']
+WORKDIR $WORK_DIR
+
+COPY ./dist/. $WORK_DIR/dist/.
+
+EXPOSE ${PORT}
+
+CMD ["/bin/bash", "start.sh"]
