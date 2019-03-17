@@ -34,7 +34,7 @@ function createDirectories () {
 }
 
 # Start of main script
-while getopts ":H: :hdr" opt; do
+while getopts ":H: :c: :hdr" opt; do
     case ${opt} in
         h )
             echo "Usage:"
@@ -42,6 +42,7 @@ while getopts ":H: :hdr" opt; do
             echo "    -H        Host IP address"
             echo "    -d        Start in debug mode"
             echo "    -r        Force recreate containers"
+            echo "    -c        Name of container to start"
             exit 0
             ;;
         d )
@@ -52,6 +53,9 @@ while getopts ":H: :hdr" opt; do
             ;;
         H )
             hostIp=$OPTARG
+            ;;
+        c )
+            container=$OPTARG
             ;;
         \? )
             echo -e "${red}Invalid option: $OPTARG${end}" 1>&2
@@ -68,8 +72,11 @@ shift $((OPTIND -1))
 
 export REQUEST_HOST=$hostIp
 
-
-cmd="sudo -E docker-compose up"
+if [[ -z $container ]]; then
+    cmd="sudo -E docker-compose up"
+else
+    cmd="sudo -E docker-compose up ${container}"
+fi
 
 if [[ $recreate = true ]]; then
     cmd+=" --force-recreate"
