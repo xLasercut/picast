@@ -1,4 +1,4 @@
-FROM scratch
-ADD ./dockerbase/2018-11-13-raspbian-stretch-lite.tar.gz
+FROM lasercut/raspbian-stretch-lite
+LABEL maintainer='xLasercut'
 
 CMD ['/bin/bash']

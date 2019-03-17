@@ -1,7 +1,5 @@
-FROM scratch
+FROM lasercut/raspbian-stretch-lite
 LABEL maintainer='xLasercut'
-
-ADD ./dockerbase/2018-11-13-raspbian-stretch-lite.tar.gz
 
 ARG WORK_DIR='/home'
 
