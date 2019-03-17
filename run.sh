@@ -83,7 +83,7 @@ if [[ ! $debug = true ]]; then
 fi
 
 
-if [[ !-z $container ]]; then
+if [[ ! -z $container ]]; then
     cmd+=" ${container}"
 fi
 
