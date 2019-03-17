@@ -3,6 +3,7 @@ services:
     picast-server:
         restart: always
         build:
+            context: ./
             dockerfile: dockerfile-server
         environment:
             - HOST=0.0.0.0
@@ -12,6 +13,7 @@ services:
     picast-client:
         restart: always
         build:
+            context: ./
             dockerfile: dockerfile-client
         environment:
             - HOST=0.0.0.0
