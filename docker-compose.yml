@@ -3,8 +3,7 @@ services:
     picast-server:
         restart: always
         build:
-            context: ./
-            dockerfile: dockerfile-server
+            context: ./server/
         environment:
             - HOST=0.0.0.0
             - PORT=8000
@@ -13,8 +12,7 @@ services:
     picast-client:
         restart: always
         build:
-            context: ./
-            dockerfile: dockerfile-client
+            context: ./client/
         environment:
             - HOST=0.0.0.0
             - PORT=8001
