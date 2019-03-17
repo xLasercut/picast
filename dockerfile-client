@@ -1,0 +1,4 @@
+FROM scratch
+ADD ./dockerbase/2018-11-13-raspbian-stretch-lite.tar.gz
+
+CMD ['/bin/bash']

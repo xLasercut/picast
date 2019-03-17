@@ -1,0 +1,13 @@
+FROM scratch
+LABEL maintainer='xLasercut'
+
+ADD ./dockerbase/2018-11-13-raspbian-stretch-lite.tar.gz
+
+ARG WORK_DIR='/home'
+
+ENV LOG_PATH $WORK_DIR/log/picast.log
+
+COPY /server/requirements.txt $WORK_DIR/requirements.txt
+
+
+CMD ['/bin/bash']

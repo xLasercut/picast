@@ -1,0 +1,21 @@
+version: '3'
+services:
+    picast-server:
+        restart: always
+        build:
+            dockerfile: dockerfile-server
+        environment:
+            - HOST=0.0.0.0
+            - PORT=8000
+        ports:
+            - 8000:8000
+    picast-client:
+        restart: always
+        build:
+            dockerfile: dockerfile-client
+        environment:
+            - HOST=0.0.0.0
+            - PORT=8001
+            - REQUEST_HOST
+        ports:
+            - 8001:8001
