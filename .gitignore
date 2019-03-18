@@ -1,6 +1,8 @@
 venv
 __pycache__
 picast.log
+.venv
+.directory
 
 #eclipse settings
 .project
