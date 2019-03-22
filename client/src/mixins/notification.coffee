@@ -1,6 +1,6 @@
-export default {
-    methods: {
-        notifySuccess(msg) {
+export default
+    methods:
+        notifySuccess: (msg) ->
             this.$message({
                 title: 'Success',
                 message: msg,
@@ -9,16 +9,13 @@ export default {
                 duration: 8000,
                 showClose: true
             })
-        },
-        notifyError(msg) {
+
+        notifyError: (msg) ->
             this.$message({
                 title: 'Error',
                 message: msg,
                 customClass: 'notificationBanner',
                 type: 'error',
                 duration: 8000,
-                showClose: true
+                showClose: true   
             })
-        }
-    }
-}

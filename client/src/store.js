@@ -5,22 +5,22 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        disabled: true,
+        disabled: false,
         baseUrl: '',
-        playback: true,
+        playback: false,
         paused: false
     },
     mutations: {
         disableVidControl(state) {
             state.disabled = true
         },
-        enableVidControl(state) {
+        enabledVidControl(state) {
             state.disabled = false
         },
-        playbackTrue(state) {
+        enablePlayback(state) {
             state.playback = true
         },
-        playbackFalse(state) {
+        disablePlayback(state) {
             state.playback = false
         },
         pauseUpdate(state) {
@@ -33,9 +33,12 @@ export default new Vuex.Store({
             state.baseUrl = url
         }
     },
+    actions: {
+
+    },
     getters: {
-        streamUrl: (state) => {
-            return `${state.baseUrl}/stream`
+        canUpdate: (state) => {
+            return !state.disabled && state.playback && !state.paused
         },
         volumeUrl: (state) => {
             return `${state.baseUrl}/volume`
@@ -46,14 +49,11 @@ export default new Vuex.Store({
         controlUrl: (state) => {
             return `${state.baseUrl}/control`
         },
+        streamUrl: (state) => {
+            return `${state.baseUrl}/stream`
+        },
         statusUrl: (state) => {
             return `${state.baseUrl}/status`
-        },
-        canUpdateStatus: (state) => {
-            return (state.playback && !state.disabled && !state.paused)
         }
-    },
-    actions: {
-
     }
 })

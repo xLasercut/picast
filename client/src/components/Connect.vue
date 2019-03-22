@@ -19,40 +19,27 @@
     </el-row>
 </template>
 
-<script>
-    import axios from 'axios'
-    import NotificationHelper from '@/mixins/notification-helper.js'
-
-    export default {
-        data() {
-            return {
-                port: 8000,
-                host: env.REQUEST_HOST
-            }
-        },
-        mixins: [
-            NotificationHelper
-        ],
-        methods: {
-            checkConnection() {
+<script lang="coffee">
+    import ApiConnector from '@/mixins/api-connector.coffee'
+    export default
+        mixins: [ 
+            ApiConnector
+        ]
+        data: () ->
+            host: env.REQUEST_HOST,
+            port: 8000
+        methods:
+            checkConnection: () ->
                 this.$emit('loadingTrue')
-                axios.get(`${this.baseUrl()}/status`)
-                .then((res) => {
+                this.$store.commit('setBaseUrl', "http://#{this.host}:#{this.port}")
+                this.getVideoStats([])
+                .then (res) =>
+                    this.notifySuccess('Connected to raspberry pi')
                     this.$store.commit('enableVidControl')
-                    this.$store.commit('setBaseUrl', this.baseUrl())
-                    this.notifySuccess('Connected to picast server')
                     this.$emit('loadingFalse')
-                })
-                .catch((e) => {
-                    this.notifyError('Could not connect to picast server')
+                .catch (e) =>
+                    this.notifyError('Unable to connect to raspberry pi')
                     this.$emit('loadingFalse')
-                })
-            },
-            baseUrl() {
-                return `http://${this.host}:${this.port}`
-            }
-        }
-    }
 </script>
 
 <style scoped>

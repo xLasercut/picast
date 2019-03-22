@@ -1,44 +1,34 @@
 <template>
-    <el-main class="home">
+    <div class="home">
         <connect @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></connect>
-        <url-input @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></url-input>
+        <video-url @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></video-url>
         <video-slider @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></video-slider>
-        <control-buttons @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></control-buttons>
-        <volume-buttons @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></volume-buttons>
-    </el-main>
+        <control-button @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></control-button>
+        <volume @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></volume>
+    </div>
 </template>
 
-<script>
+<script lang="coffee">
     import Connect from '@/components/Connect.vue'
-    import UrlInput from '@/components/UrlInput.vue'
+    import ControlButton from '@/components/ControlButton.vue'
+    import VideoUrl from '@/components/VideoUrl.vue'
     import VideoSlider from '@/components/VideoSlider.vue'
-    import ControlButtons from '@/components/ControlButtons.vue'
-    import VolumeButtons from '@/components/VolumeButtons.vue'
+    import Volume from '@/components/Volume.vue'
 
-    export default {
+    export default
+        name: 'home'
         components: {
             Connect,
-            UrlInput,
+            ControlButton,
+            VideoUrl,
             VideoSlider,
-            ControlButtons,
-            VolumeButtons
-        },
-        data() {
-            return {
-                loading: ''
-            }
-        },
-        methods: {
-            loadingTrue() {
-                this.loading = this.$loading()
-            },
-            loadingFalse() {
-                this.loading.close()
-            }
+            Volume
         }
-    }
+        data: () ->
+            loading: ''
+        methods:
+            loadingTrue: () ->
+                this.loading = this.$loading()
+            loadingFalse: () ->
+                this.loading.close()
 </script>
-
-<style>
-
-</style>
