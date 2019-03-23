@@ -17,7 +17,11 @@ WORKDIR $WORK_DIR
 
 COPY dist $WORK_DIR/dist/.
 COPY start.sh $WORK_DIR/.
+COPY healthcheck.sh $WORK_DIR/.
 
 EXPOSE ${PORT}
+
+HEALTHCHECK --interval=1m30s --timeout=10s --retries=10 \
+     CMD /bin/bash healthcheck.sh
 
 CMD ["/bin/bash", "start.sh"]

@@ -20,5 +20,7 @@ WORKDIR $WORK_DIR
 
 EXPOSE ${PORT}
 
+HEALTHCHECK --interval=1m30s --timeout=10s --retries=10 \
+    CMD curl --fail -X POST -H "Content-Type: application/json" -d '{"status": []}' http://$HOST:$PORT/status || exit 1
 
 CMD ["python3", "-u", "main.py"]
