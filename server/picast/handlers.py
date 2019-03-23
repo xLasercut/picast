@@ -3,7 +3,7 @@ from picast import app
 from picast.exceptions import InvalidRequest
 from picast.services import StreamService, VolumeService, SeekService, ControlService, StatusService
 
-statusService = StatusService()
+streamService = StreamService()
 volumeService = VolumeService()
 seekService = SeekService()
 controlService = ControlService()
