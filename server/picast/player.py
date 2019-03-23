@@ -35,10 +35,7 @@ class VideoPlayer(object):
         if not self.player:
             self.player = OMXPlayer(url, args=self.args)
         else:
-            try:
-                self.player.load(url)
-            except OMXPlayerDeadError:
-                self.player = OMXPlayer(url, args=self.args)
+            self.player.load(url)
             
     def setVolume(self, volume):
         self._checkPlayerExist()
