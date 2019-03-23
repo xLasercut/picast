@@ -7,7 +7,7 @@ class VideoPlayer(object):
     def __init__(self):
         self.player = None
         self.logger = LogObject('Video Player')
-        self.args = ['-o', 'hdmi', '-b']
+        self.args = ['-b']
         
         self.STATUS_MAP = {
             'volume': self._videoVolume,
@@ -32,20 +32,23 @@ class VideoPlayer(object):
 
     def playUrl(self, url):
         if not self.player:
-            self.player = OMXPlayer(url)
+            self.player = OMXPlayer(url, args=self.args)
         else:
             self.player.load(url)
             
     def setVolume(self, volume):
         self._checkPlayerExist()
-        self.player.set_volume(volume)
-        return self.logger.writeAndReturnLog('VOL0003', {'volume': volume})
+        try:
+            self.player.set_volume(volume)
+            return self.logger.writeAndReturnLog('VOL0003', {'volume': volume})
+        except AttributeError:
+            self._raisePlayerError('VOL0004')
     
     def sendCommand(self, command):
         self._checkPlayerExist()
         try:
             return self.CONTROL_MAP[command]()
-        except:
+        except AttributeError:
             self._raisePlayerError('CTRL0003')
 
     def _stop(self):
@@ -74,7 +77,10 @@ class VideoPlayer(object):
     
     def seek(self, option, time):
         self._checkPlayerExist()
-        return self.SEEK_MAP[option](time)
+        try:
+            return self.SEEK_MAP[option](time)
+        except AttributeError:
+            self._raisePlayerError('SEEK0007')
 
     def _seek(self, seekTime):
         self.player.seek(seekTime)
@@ -95,8 +101,8 @@ class VideoPlayer(object):
             self._raisePlayerError('STAT0003')
         try:
             return self.STATUS_MAP[status]()
-        except:
-           self._raisePlayerError('STAT0003')
+        except AttributeError:
+            self._raisePlayerError('STAT0003')
         
     def _videoPosition(self):
         return self.player.position()

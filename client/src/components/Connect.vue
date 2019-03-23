@@ -20,26 +20,28 @@
 </template>
 
 <script lang="coffee">
-    import ApiConnector from '@/mixins/api-connector.coffee'
+    import axios from 'axios'
+    import Notification from '@/mixins/notification.coffee'
+
     export default
-        mixins: [ 
-            ApiConnector
-        ]
+        mixins: [ Notification ]
         data: () ->
             host: env.REQUEST_HOST,
-            port: 8000
+            port: 8000,
+            loading: ''
         methods:
             checkConnection: () ->
-                this.$emit('loadingTrue')
+                this.loading = this.$loading()
                 this.$store.commit('setBaseUrl', "http://#{this.host}:#{this.port}")
-                this.getVideoStats([])
+                body = { status: [] }
+                axios.post(this.$store.getters.statusUrl, body)
                 .then (res) =>
+                    this.loading.close()
                     this.notifySuccess('Connected to raspberry pi')
                     this.$store.commit('enableVidControl')
-                    this.$emit('loadingFalse')
                 .catch (e) =>
+                    this.loading.close()
                     this.notifyError('Unable to connect to raspberry pi')
-                    this.$emit('loadingFalse')
 </script>
 
 <style scoped>

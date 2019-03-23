@@ -52,7 +52,7 @@ class LogObject(object):
             logText = logDict['Log Text']
             if not logLevel or not logText or logLevel not in self.VALID_LOG_LEVEL:
                 raise KeyError
-            logMessage = pystache.render(logText, variablesDict)
+            logMessage = '{} - {}'.format(logReference, pystache.render(logText, variablesDict))
             return logLevel, logMessage
         except KeyError:
             return 'ERROR', 'Log Reference: {} is invalid'.format(logReference)

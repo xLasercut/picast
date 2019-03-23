@@ -1,10 +1,10 @@
 <template>
     <div class="home">
-        <connect @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></connect>
-        <video-url @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></video-url>
-        <video-slider @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></video-slider>
-        <control-button @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></control-button>
-        <volume @loadingTrue="loadingTrue()" @loadingFalse="loadingFalse()"></volume>
+        <connect></connect>
+        <video-url></video-url>
+        <video-slider :vidLength="videoLength" v-model="videoPosition"></video-slider>
+        <control-button></control-button>
+        <volume v-model="volume"></volume>
     </div>
 </template>
 
@@ -14,9 +14,12 @@
     import VideoUrl from '@/components/VideoUrl.vue'
     import VideoSlider from '@/components/VideoSlider.vue'
     import Volume from '@/components/Volume.vue'
+    import Notification from '@/mixins/notification.coffee'
+    import axios from 'axios'
 
     export default
         name: 'home'
+        mixins: [ Notification ]
         components: {
             Connect,
             ControlButton,
@@ -25,10 +28,31 @@
             Volume
         }
         data: () ->
-            loading: ''
+            volume: 0,
+            videoLength: 0,
+            videoPosition: 0
         methods:
-            loadingTrue: () ->
-                this.loading = this.$loading()
-            loadingFalse: () ->
-                this.loading.close()
+            updateVideoStats: () ->
+                if this.$store.getters.canUpdate
+                    body = {
+                        status: ['length', 'position', 'volume']
+                    }
+                    axios.post(this.$store.getters.statusUrl, body)
+                    .then (res) =>
+                        console.log(res.data)
+                        this.videoPosition = res.data.position
+                        this.videoLength = res.data.length
+                        this.volume = res.data.volume
+                    .catch (e) =>
+                        statusCode = e.response.status
+                        errorMsg = e.response.data
+
+                        if statusCode == 403 && errorMsg == 'Cannot retrieve stats when no video is playing'
+                            this.$store.commit('disablePlayback')
+                        else
+                            this.notifyError(errorMsg)
+        mounted: () ->
+            setInterval(() =>
+                this.updateVideoStats()
+            , 1000)
 </script>

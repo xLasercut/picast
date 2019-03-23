@@ -14,24 +14,21 @@
     import Notification from '@/mixins/notification.coffee'
 
     export default
-        mixins: [
-            Notification
-        ]
+        mixins: [ Notification ]
         data: () ->
-            videoUrl: ''
+            videoUrl: '',
+            loading: ''
         methods:
             sendVideoUrl: () ->
-                this.$emit('loadingTrue')
-                body = {
-                    url: this.videoUrl
-                }
+                this.loading = this.$loading()
+                body = { url: this.videoUrl }
                 axios.post(this.$store.getters.streamUrl, body)
                 .then (res) =>
-                    this.$emit('loadingFalse')
+                    this.loading.close()
                     this.$store.commit('enablePlayback')
                     this.notifySuccess(res.data)
                 .catch (e) =>
-                    this.$emit('loadingFalse')
+                    this.loading.close()
                     this.notifyError(e.response.data)
                     
 </script>

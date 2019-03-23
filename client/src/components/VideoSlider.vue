@@ -19,15 +19,23 @@
 </template>
 
 <script lang="coffee">
-    import ApiConnector from '@/mixins/api-connector.coffee'
+    import Notification from '@/mixins/notification.coffee'
+    import axios from 'axios'
 
     export default
-        mixins: [
-            ApiConnector
-        ]
+        props: ['vidLength', 'value']
+        mixins: [ Notification ]
+        watch:
+            videoPosition: (val) ->
+                this.$emit('input', val)
+            vidLength: (val) ->
+                this.videoLength = val
+            value: (val) ->
+                this.videoPosition = val
         data: () ->
-            videoPosition: 600,
-            videoLength: 0
+            videoPosition: this.value,
+            videoLength: this.vidLength
+            loading: ''
         methods:
             formatTime: (time) ->
                 if time < 10
@@ -38,26 +46,21 @@
                 minutes = this.formatTime(Math.floor(time/60))
                 seconds = this.formatTime(Math.floor(time % 60))
                 return "#{hours}:#{minutes}:#{seconds}"
-            updateVideoStats: () ->
-                if this.$store.getters.canUpdate
-                    this.getVideoStats(['length', 'position'])
-                    .then (res) =>
-                        this.videoPosition = res.data.position
-                        this.videoLength = res.data.length
-                    .catch (e) =>
-                        statusCode = e.response.status
-                        errorMsg = e.response.data
-
-                        if statusCode == 403 && errorMsg == 'Cannot retrieve stats when no video is playing'
-                            this.$store.commit('disablePlayback')
-                        else
-                            this.notifyError(errorMsg)
             setPosition: () ->
-                this.seekCommand(this.videoPosition, 'absolute')
-        mounted: () ->
-            setInterval(() =>
-                this.updateVideoStats()
-            , 5000)
+                this.loading = this.$loading()
+                body = {
+                    time: this.videoPosition,
+                    option: 'absolute'
+                }
+                axios.post(this.$store.getters.seekUrl, body)
+                .then (res) =>
+                    this.loading.close()
+                    this.notifySuccess(res.data)
+                .catch (e) =>
+                    this.loading.close()
+                    this.notifyError(e.response.data)
+                
+        
 </script>
 
 <style scoped>

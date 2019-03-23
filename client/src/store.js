@@ -14,7 +14,7 @@ export default new Vuex.Store({
         disableVidControl(state) {
             state.disabled = true
         },
-        enabledVidControl(state) {
+        enableVidControl(state) {
             state.disabled = false
         },
         enablePlayback(state) {

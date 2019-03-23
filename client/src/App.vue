@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" @mouseup="$store.commit('unpauseUpdate')">
         <router-view></router-view>
     </div>
 </template>
