@@ -3,7 +3,7 @@ from picast import app
 from picast.exceptions import InvalidRequest
 from picast.services import StreamService, VolumeService, SeekService, ControlService, StatusService
 
-@app.route('/status', methods=['GET', 'POST'])
+@app.route('/status', methods=['POST'])
 def statusHandler():
     try:
         statusService = StatusService(request)

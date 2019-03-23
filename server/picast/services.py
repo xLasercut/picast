@@ -9,7 +9,8 @@ from flask import jsonify
 player = VideoPlayer()
 
 class AbstractService(object):
-    def __init__(self, request):
+    def __init__(self, request, serviceName):
+        self.logger = LogObject(serviceName)
         self.request = request.get_json()
         self._checkEmptyRequestBody()
 
@@ -45,12 +46,12 @@ class AbstractService(object):
 class StatusService(AbstractService):
     
     def __init__(self, request):
-        self.logger = LogObject('Status Service')
-        super(StatusService, self).__init__(request)
-        
+        super(StatusService, self).__init__(request, 'Status Service')
         
     def _parseRequest(self):
-        self.requiredStatus = self.request.get('status', [])
+        self.requiredStatus = self.request.get('status')
+        if not self.requiredStatus:
+            self.requiredStatus = []
         
     def _validateRequest(self):
         if not isinstance(self.requiredStatus, list):
@@ -71,10 +72,7 @@ class StatusService(AbstractService):
                 self.successMsg = jsonify(returnDict)
             except PlayerError as e:
                 raise InvalidRequest(e.errorResponse)
-        
-    def _checkEmptyRequestBody(self):
-        if not self.request:
-            self.request = {}
+
 
 class StreamService(AbstractService):
     VIDEO_QUALITY = {
@@ -88,8 +86,7 @@ class StreamService(AbstractService):
     VIDEO_ENDING = re.compile(r'(\.mp4|\.mkv|.mov)$', re.IGNORECASE)
     
     def __init__(self, request):
-        self.logger = LogObject('Stream Service')
-        super(StreamService, self).__init__(request)
+        super(StreamService, self).__init__(request, 'Stream Service')
         self.streamUrl = None
 
     def _parseRequest(self):
@@ -146,9 +143,7 @@ class StreamService(AbstractService):
 class VolumeService(AbstractService):
 
     def __init__(self, request):
-        self.logger = LogObject('Volume Service')
-        super(VolumeService, self).__init__(request)
-        
+        super(VolumeService, self).__init__(request, 'Volume Service')
         
     def _parseRequest(self):
         self.volume = self.request.get('volume')
@@ -170,8 +165,7 @@ class VolumeService(AbstractService):
 
 class SeekService(AbstractService):
     def __init__(self, request):
-        self.logger = LogObject('Seek Service')
-        super(SeekService, self).__init__(request)
+        super(SeekService, self).__init__(request, 'Seek Service')
         
     def _parseRequest(self):
         self.time = self.request.get('time')
@@ -197,8 +191,7 @@ class SeekService(AbstractService):
 
 class ControlService(AbstractService):
     def __init__(self, request):
-        self.logger = LogObject('Control Service')
-        super(ControlService, self).__init__(request)
+        super(ControlService, self).__init__(request, 'Control Service')
         
     def _parseRequest(self):
         self.option = self.request.get('option')
