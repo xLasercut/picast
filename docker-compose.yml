@@ -1,6 +1,7 @@
 version: '3'
 services:
     picast-server:
+        restart: unless-stopped
         build:
             context: ./server/
         environment:
@@ -14,6 +15,7 @@ services:
             - /dev/vchiq:/dev/vchiq
             - /dev/fb0:/dev/fb0
     picast-client:
+        restart: unless-stopped
         build:
             context: ./client/
         environment:

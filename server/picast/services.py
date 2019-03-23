@@ -9,8 +9,7 @@ from flask import jsonify
 player = VideoPlayer()
 
 class AbstractService(object):
-    def __init__(self, request, serviceName):
-        self.logger = LogObject(serviceName)
+    def __init__(self, request):
         self.request = request.get_json()
         self._checkEmptyRequestBody()
 
@@ -46,7 +45,8 @@ class AbstractService(object):
 class StatusService(AbstractService):
     
     def __init__(self, request):
-        super(StatusService, self).__init__(request, 'Status Service')
+        self.logger = LogObject('Status Service')
+        super(StatusService, self).__init__(request)
         
     def _parseRequest(self):
         self.requiredStatus = self.request.get('status')
@@ -86,7 +86,8 @@ class StreamService(AbstractService):
     VIDEO_ENDING = re.compile(r'(\.mp4|\.mkv|.mov)$', re.IGNORECASE)
     
     def __init__(self, request):
-        super(StreamService, self).__init__(request, 'Stream Service')
+        self.logger = LogObject('Stream Service')
+        super(StreamService, self).__init__(request)
         self.streamUrl = None
 
     def _parseRequest(self):
@@ -143,7 +144,8 @@ class StreamService(AbstractService):
 class VolumeService(AbstractService):
 
     def __init__(self, request):
-        super(VolumeService, self).__init__(request, 'Volume Service')
+        self.logger = LogObject('Volume Service')
+        super(VolumeService, self).__init__(request)
         
     def _parseRequest(self):
         self.volume = self.request.get('volume')
@@ -165,7 +167,8 @@ class VolumeService(AbstractService):
 
 class SeekService(AbstractService):
     def __init__(self, request):
-        super(SeekService, self).__init__(request, 'Seek Service')
+        self.logger = LogObject('Seek Service')
+        super(SeekService, self).__init__(request)
         
     def _parseRequest(self):
         self.time = self.request.get('time')
@@ -191,7 +194,8 @@ class SeekService(AbstractService):
 
 class ControlService(AbstractService):
     def __init__(self, request):
-        super(ControlService, self).__init__(request, 'Control Service')
+        self.logger = LogObject('Control Service')
+        super(ControlService, self).__init__(request)
         
     def _parseRequest(self):
         self.option = self.request.get('option')
