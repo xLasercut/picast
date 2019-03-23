@@ -6,7 +6,7 @@ export default
                 message: msg,
                 type: 'success',
                 customClass: 'notificationBanner',
-                duration: 8000,
+                duration: 3000,
                 showClose: true
             })
 
@@ -16,6 +16,6 @@ export default
                 message: msg,
                 customClass: 'notificationBanner',
                 type: 'error',
-                duration: 8000,
+                duration: 3000,
                 showClose: true   
             })

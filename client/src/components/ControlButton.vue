@@ -2,35 +2,35 @@
     <el-row>
         <el-button-group>
             <el-button
-                :disabled="$store.state.disabled"
+                :disabled="$store.getters.canControl"
                 @click="playbackControl('play')"
                 type="primary"
             >
                 <font-awesome-icon icon="play"/>
             </el-button>
             <el-button
-                :disabled="$store.state.disabled"
+                :disabled="$store.getters.canControl"
                 @click="playbackControl('pause')"
                 type="primary"
             >
                 <font-awesome-icon icon="pause"/>
             </el-button>
             <el-button
-                :disabled="$store.state.disabled"
+                :disabled="$store.getters.canControl"
                 @click="playbackControl('stop')"
                 type="danger"
             >
                 <font-awesome-icon icon="stop"/>
             </el-button>
             <el-button
-                :disabled="$store.state.disabled"
+                :disabled="$store.getters.canControl"
                 @click="stepTime(-30)"
                 type="warning"
             >
                 <font-awesome-icon icon="step-backward"/>
             </el-button>
             <el-button
-                :disabled="$store.state.disabled"
+                :disabled="$store.getters.canControl"
                 @click="stepTime(30)"
                 type="warning"
             >
@@ -60,6 +60,8 @@
                 .then (res) =>
                     this.loading.close()
                     this.notifySuccess(res.data)
+                    if command == 'stop'
+                        this.$store.commit('disablePlayback')
                 .catch (e) =>
                     this.loading.close()
                     this.notifyError(e.response.data)

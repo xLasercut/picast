@@ -40,6 +40,9 @@ export default new Vuex.Store({
         canUpdate: (state) => {
             return !state.disabled && state.playback && !state.paused
         },
+        canControl: (state) => {
+            return !(!state.disabled && state.playback)
+        },
         volumeUrl: (state) => {
             return `${state.baseUrl}/volume`
         },

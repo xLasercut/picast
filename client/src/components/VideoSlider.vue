@@ -4,7 +4,7 @@
             <div class="sliderContainer" @mousedown="$store.commit('pauseUpdate')">
                 <el-slider
                     v-model="videoPosition"
-                    :disabled="$store.state.disabled"
+                    :disabled="$store.getters.canControl"
                     :min="0"
                     :max="videoLength"
                     :format-tooltip="convertToHHMMSS"

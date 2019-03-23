@@ -2,7 +2,7 @@
     <el-row :gutter="10" type="flex" justify="center">
         <el-col :span="3">
             <el-button 
-                :disabled="$store.state.disabled"
+                :disabled="$store.getters.canControl"
                 @click="toggleMute()"
             ><font-awesome-icon :icon="volumeIcon()"/></el-button>
         </el-col>
@@ -10,7 +10,7 @@
             <div @mousedown="$store.commit('pauseUpdate')">
                 <el-slider
                     v-model="volume"
-                    :disabled="$store.state.disabled"
+                    :disabled="$store.getters.canControl"
                     :min="0"
                     :max="2"
                     :step="0.2"
