@@ -18,11 +18,11 @@ class LogObject(object):
 
     def writeLog(self, logReference, variablesDict={}):
         logLevel, logMessage = self._getLogDetails(logReference, variablesDict)
-        self._renderLog(logLevel, logMessage)
+        self._renderLog(logLevel, logMessage, logReference)
 
     def writeAndReturnLog(self, logReference, variablesDict={}):
         logLevel, logMessage = self._getLogDetails(logReference, variablesDict)
-        self._renderLog(logLevel, logMessage)
+        self._renderLog(logLevel, logMessage, logReference)
         return logMessage
 
     def debug(self, debugMsg):
@@ -52,17 +52,18 @@ class LogObject(object):
             logText = logDict['Log Text']
             if not logLevel or not logText or logLevel not in self.VALID_LOG_LEVEL:
                 raise KeyError
-            logMessage = '{} - {}'.format(logReference, pystache.render(logText, variablesDict))
+            logMessage = pystache.render(logText, variablesDict)
             return logLevel, logMessage
         except KeyError:
             return 'ERROR', 'Log Reference: {} is invalid'.format(logReference)
 
-    def _renderLog(self, logLevel, logMessage):
+    def _renderLog(self, logLevel, logMessage, logReference):
+        stringToLog = '{} - {}'.format(logReference, logMessage)
         if logLevel == 'INFO':
-            self.logger.info(logMessage)
+            self.logger.info(stringToLog)
         elif logLevel == 'WARN':
-            self.logger.warning(logMessage)
+            self.logger.warning(stringToLog)
         elif logLevel == 'ERROR':
-            self.logger.error(logMessage)
+            self.logger.error(stringToLog)
         elif logLevel == 'CRIT':
-            self.logger.critical(logMessage)
+            self.logger.critical(stringToLog)
