@@ -54,5 +54,5 @@
         mounted: () ->
             setInterval(() =>
                 this.updateVideoStats()
-            , 1000)
+            , 5000)
 </script>

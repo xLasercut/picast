@@ -1,4 +1,4 @@
-from omxplayer.player import OMXPlayer
+from omxplayer.player import OMXPlayer, OMXPlayerDeadError
 from picast.exceptions import PlayerError
 from picast.logging import LogObject
 
@@ -31,10 +31,14 @@ class VideoPlayer(object):
         }
 
     def playUrl(self, url):
+
         if not self.player:
             self.player = OMXPlayer(url, args=self.args)
         else:
-            self.player.load(url)
+            try:
+                self.player.load(url)
+            except OMXPlayerDeadError:
+                self.player = OMXPlayer(url, args=self.args)
             
     def setVolume(self, volume):
         self._checkPlayerExist()
