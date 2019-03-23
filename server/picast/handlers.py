@@ -3,11 +3,16 @@ from picast import app
 from picast.exceptions import InvalidRequest
 from picast.services import StreamService, VolumeService, SeekService, ControlService, StatusService
 
+statusService = StatusService()
+volumeService = VolumeService()
+seekService = SeekService()
+controlService = ControlService()
+statusService = StatusService()
+
 @app.route('/status', methods=['POST'])
 def statusHandler():
     try:
-        statusService = StatusService(request)
-        statusService.runWorkflow()
+        statusService.runWorkflow(request)
         return statusService.successResponse
     except InvalidRequest as e:
         return e.errorResponse
@@ -16,8 +21,7 @@ def statusHandler():
 @app.route('/stream', methods=['POST'])
 def streamHandler():
     try:
-        streamService = StreamService(request)
-        streamService.runWorkflow()
+        streamService.runWorkflow(request)
         return streamService.successResponse
     except InvalidRequest as e:
         return e.errorResponse
@@ -26,8 +30,7 @@ def streamHandler():
 @app.route('/volume', methods=['POST'])
 def volumeHandler():
     try:
-        volumeService = VolumeService(request)
-        volumeService.runWorkflow()
+        volumeService.runWorkflow(request)
         return volumeService.successResponse
     except InvalidRequest as e:
         return e.errorResponse
@@ -36,8 +39,7 @@ def volumeHandler():
 @app.route('/seek', methods=['POST'])
 def seekHandler():
     try:
-        seekService = SeekService(request)
-        seekService.runWorkflow()
+        seekService.runWorkflow(request)
         return seekService.successResponse
     except InvalidRequest as e:
         return e.errorResponse
@@ -45,8 +47,7 @@ def seekHandler():
 @app.route('/control', methods=['POST'])
 def controlHandler():
     try:
-        controlService = ControlService(request)
-        controlService.runWorkflow()
+        controlService.runWorkflow(request)
         return controlService.successResponse
     except InvalidRequest as e:
         return e.errorResponse
