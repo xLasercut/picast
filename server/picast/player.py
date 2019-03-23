@@ -45,14 +45,14 @@ class VideoPlayer(object):
         try:
             self.player.set_volume(volume)
             return self.logger.writeAndReturnLog('VOL0003', {'volume': volume})
-        except AttributeError, OMXPlayerDeadError:
+        except (AttributeError, OMXPlayerDeadError):
             self._raisePlayerError('VOL0004')
     
     def sendCommand(self, command):
         self._checkPlayerExist()
         try:
             return self.CONTROL_MAP[command]()
-        except AttributeError, OMXPlayerDeadError:
+        except (AttributeError, OMXPlayerDeadError):
             self._raisePlayerError('CTRL0003')
 
     def _stop(self):
@@ -83,7 +83,7 @@ class VideoPlayer(object):
         self._checkPlayerExist()
         try:
             return self.SEEK_MAP[option](time)
-        except AttributeError, OMXPlayerDeadError:
+        except (AttributeError, OMXPlayerDeadError):
             self._raisePlayerError('SEEK0007')
 
     def _seek(self, seekTime):
@@ -105,7 +105,7 @@ class VideoPlayer(object):
             self._raisePlayerError('STAT0003')
         try:
             return self.STATUS_MAP[status]()
-        except AttributeError, OMXPlayerDeadError:
+        except (AttributeError, OMXPlayerDeadError):
             self._raisePlayerError('STAT0003')
         
     def _videoPosition(self):
