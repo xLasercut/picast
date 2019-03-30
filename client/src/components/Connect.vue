@@ -42,6 +42,7 @@
                 .catch (e) =>
                     this.loading.close()
                     this.notifyError('Unable to connect to raspberry pi')
+                    this.$store.commit('enableVidControl')
 </script>
 
 <style scoped>
