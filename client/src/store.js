@@ -41,7 +41,7 @@ export default new Vuex.Store({
             return !state.disabled && state.playback && !state.paused
         },
         canControl: (state) => {
-            return !(!state.disabled && state.playback)
+            return !(!state.disabled)
         },
         volumeUrl: (state) => {
             return `${state.baseUrl}/volume`
