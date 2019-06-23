@@ -6,7 +6,13 @@ state = {
   idle: 2
 }
 
+controls = {
+  stop: 'q',
+  pause: 'p'
+}
+
 module.exports = {
   options,
-  state
+  state,
+  contols
 }

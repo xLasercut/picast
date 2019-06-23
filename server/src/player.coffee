@@ -1,6 +1,6 @@
 { execSync } = require 'child_process'
 
-{ options, state } = require './player/constants.coffee'
+{ options, state, controls } = require './player/constants.coffee'
 
 
 class OMXPlayer
@@ -18,6 +18,15 @@ class OMXPlayer
     @logger.writeLog('PLAYER001', { file: file })
     if @state == state.idle
       @initPlayer(file)
+
+  stop: () ->
+    @sendKey(controls.stop)
+
+  sendKey: (key) ->
+    if !@player or @state == state.idle
+      return false
+
+    @player.stdin.write(key)
 
 
 module.exports = OMXPlayer
