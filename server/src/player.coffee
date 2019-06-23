@@ -1,11 +1,22 @@
-childProcess = require 'child_process'
+execSync = require 'child_process'.execSync
 EventEmitter = require 'events'.EventEmitter
 
-{ options, state } = require './player/map.coffee'
+{ options, state } = require './player/constants.coffee'
 
 
 class OMXPlayer extends EventEmitter
-  constructor: () ->
+  constructor: (logger) ->
     super()
-    @player = childProcess.execSync("omxplayer #{options}")
+    @logger = logger
+    @player = null
     @state = state.idle
+
+  initPlayer: (file) ->
+    @player = execSync("omxplayer #{options} #{file}")
+    @state = state.playing
+
+
+  play: (file) ->
+    logger.writeLog('PLAYER001', { file: file })
+    if @state == state.idle
+      @initPlayer(file)

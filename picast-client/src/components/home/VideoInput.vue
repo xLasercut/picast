@@ -5,6 +5,7 @@
         v-model.trim="url" box
         label="Video URL"
         append-icon="mdi-send"
+        @click:append="playVideo()"
       ></v-text-field>
     </v-flex>
   </v-layout>
@@ -14,5 +15,7 @@
   export default
     data: () ->
       url: ''
-
+    methods:
+      playVideo: () ->
+        this.$socket.emit('PLAY_VIDEO', this.url)
 </script>
