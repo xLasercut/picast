@@ -14,5 +14,5 @@ controls = {
 module.exports = {
   options,
   state,
-  contols
+  controls
 }
