@@ -1,4 +1,4 @@
-{ execSync } = require 'child_process'
+{ exec } = require 'child_process'
 
 { options, state, controls } = require './player/constants.coffee'
 
@@ -10,7 +10,7 @@ class OMXPlayer
     @state = state.idle
 
   initPlayer: (file) ->
-    @player = execSync("omxplayer #{options} #{file}")
+    @player = exec("omxplayer #{options} #{file}")
     @state = state.playing
 
 
