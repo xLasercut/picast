@@ -22,6 +22,6 @@
       stop: () ->
         this.$socket.emit('STOP_VIDEO')
       pause: () ->
-        this.$socket.emit 'VIDEO_STATUS', null, (callback) =>
+        this.$socket.emit 'PLAYER_STATUS', null, (callback) =>
           console.log(callback)
 </script>

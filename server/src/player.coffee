@@ -53,17 +53,7 @@ class OMXPlayer
     @file = null
     @state = state.idle
 
-  status: () ->
-    deferred = q.defer()
-    exec "#{controlFile} status", (err, stdout, stderr) =>
-      console.log(err)
-      console.log(stdout)
-      console.log(stderr)
-      if err
-        q.reject(err)
-      else
-        q.resolve(stdout)
-
-    return deferred.promise
+  status: (callback) ->
+    exec("#{controlFile} status", callback)
 
 module.exports = OMXPlayer
