@@ -29,8 +29,5 @@ io.on 'connect', (socket) =>
     player.playPause()
 
   socket.on 'PLAYER_STATUS', (_data, callback) =>
-    player.status (err, stdout, stderr) =>
-      if err
-        callback(false)
-      else
-        callback(stdout)
+    player.status (data) =>
+      callback(data)
