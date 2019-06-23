@@ -1,0 +1,14 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 5
+    },
+    "auditLog": "D:\\Git\\picast\\server\\logs\\.15a454027d857e5da07922ad189b6a612f4bbe48-audit.json",
+    "files": [
+        {
+            "date": 1561279982665,
+            "name": "D:\\Git\\picast\\server\\logs\\error-2019-06-23.log",
+            "hash": "f957a776d783fc5bb5efb81e2de7c994"
+        }
+    ]
+}
