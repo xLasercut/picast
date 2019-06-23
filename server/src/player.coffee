@@ -42,7 +42,7 @@ class OMXPlayer
   status: (callback) ->
     @_sendDbusControl dbus.status, null, (data) =>
       console.log(data)
-      callback(data.split('\n'))
+      callback(data.split(':'))
 
   _sendKey: (key) ->
     @logger.writeLog('PLAYER002', { key: key })
