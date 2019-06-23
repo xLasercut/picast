@@ -12,7 +12,8 @@ controls = {
 }
 
 dbus = {
-  seek: 'setposition'
+  seek: 'setposition',
+  status: 'status'
 }
 
 module.exports = {
