@@ -3,7 +3,7 @@
     <v-flex xs12 class="text-xs-center">
       <control-btn color="primary" :disabled="disabled">mdi-play</control-btn>
       <control-btn color="warning" :disabled="disabled">mdi-pause</control-btn>
-      <control-btn color="error" :disabled="disabled">mdi-stop</control-btn>
+      <control-btn color="error" :disabled="disabled" @click="stop()">mdi-stop</control-btn>
       <control-btn color="primary" :disabled="disabled">mdi-skip-previous</control-btn>
       <control-btn color="primary" :disabled="disabled">mdi-skip-next</control-btn>
     </v-flex>
@@ -18,4 +18,7 @@
     computed:
       disabled: () ->
         return !this.$store.state.connected
+    methods:
+      stop: () ->
+        this.$socket.emit('STOP_VIDEO')
 </script>

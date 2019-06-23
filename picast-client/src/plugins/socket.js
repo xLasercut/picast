@@ -4,8 +4,7 @@ import VueSocketio from 'vue-socket.io-extended'
 import io from 'socket.io-client'
 
 var options = {
-  autoConnect: false,
-  timeout: 10000
+  autoConnect: false
 }
 
 Vue.use(VueSocketio, io(PICAST_SERVER, options), { store })

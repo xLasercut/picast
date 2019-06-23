@@ -21,3 +21,6 @@ io.on 'connect', (socket) =>
 
   socket.on 'PLAY_VIDEO', (url) =>
     player.play(url)
+
+  socket.on 'STOP_VIDEO', () =>
+    player.stop()
