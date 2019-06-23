@@ -20,7 +20,10 @@ io.on 'connect', (socket) =>
   console.log(socket.id)
 
   socket.on 'PLAY_VIDEO', (url) =>
-    player.play(url)
+    player.initPlayer(url)
 
   socket.on 'STOP_VIDEO', () =>
     player.stop()
+
+  socket.on 'PLAY_PAUSE', () =>
+    player.playPause()

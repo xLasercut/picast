@@ -8,19 +8,25 @@ class OMXPlayer
     @logger = logger
     @player = null
     @state = state.idle
+    @file = null
 
   initPlayer: (file) ->
+    @logger.writeLog('PLAYER001', { file: file })
     @player = exec("omxplayer #{options} #{file}")
     @state = state.playing
-
-
-  play: (file) ->
-    @logger.writeLog('PLAYER001', { file: file })
-    if @state == state.idle
-      @initPlayer(file)
+    @file = file
 
   stop: () ->
     @sendKey(controls.stop)
+    @resetPlayer()
+
+
+  playPause: () ->
+    @sendKey(controls.pause)
+    if @state == state.playing
+      @state = state.paused
+    else if @state == state.paused
+      @state = state.playing
 
   sendKey: (key) ->
     @logger.writeLog('PLAYER002', { key: key })
@@ -29,5 +35,19 @@ class OMXPlayer
 
     @player.stdin.write(key)
 
+  seek: (position) ->
+    if !@file
+      return false
+
+    file = @file
+    if @player or @state != state.idle
+      @stop()
+
+    @player = exec("omxplayer #{options} #{file}")
+
+  resetPlayer: () ->
+    @player = null
+    @file = null
+    @state = state.idle
 
 module.exports = OMXPlayer

@@ -1,5 +1,5 @@
 <template>
-  <v-btn depressed :color="color" :disabled="disabled">
+  <v-btn depressed :color="color" :disabled="disabled" @click="$emit('click')">
     <v-icon>
       <slot></slot>
     </v-icon>
