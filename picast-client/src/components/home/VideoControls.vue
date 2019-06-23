@@ -26,5 +26,7 @@
           console.log(callback)
       play: () ->
         this.$socket.emit 'PLAYER_VOLUME', null, (callback) =>
-          console.log(callback)
+          mdb = parseFloat(callback.split(': ')[1])
+          vol = Math.pow(10, (mdb/2000))
+          console.log(vol)
 </script>

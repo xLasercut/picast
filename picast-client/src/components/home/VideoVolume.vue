@@ -6,6 +6,9 @@
         :prepend-icon="icon"
       ></v-slider>
     </v-flex>
+    <v-flex shrink>
+      {{volume}}
+    </v-flex>
   </v-layout>
 </template>
 

@@ -40,17 +40,18 @@ class OMXPlayer
     @state = state.idle
 
   status: (callback) ->
-    @_sendDbusControl dbus.status, null, (data) =>
-      output = {}
+    output = {}
+    @_sendDbusControl(dbus.status)
+    .then (data) =>
       for row in data.split('\n')
         if row
           rowArray = row.split(':')
           output[rowArray[0]] = rowArray[1].trim()
+      return @_sendDbusControl(dbus.volume)
+    .then (data) =>
+      array = data.split(':')
+      output[array[0]] = array[1].trim()
       callback(output)
-
-  volume: (callback) ->
-    @_sendDbusControl dbus.volume, null, (data) =>
-      callback(data)
 
   _sendKey: (key) ->
     @logger.writeLog('PLAYER002', { key: key })
@@ -59,7 +60,8 @@ class OMXPlayer
 
     @player.stdin.write(key)
 
-  _sendDbusControl: (command, value, callback) ->
+  _sendDbusControl: (command, value=false) ->
+    deferred = q.defer()
     if value
       cmd = "#{controlFile} #{command} #{value}"
     else
@@ -69,6 +71,8 @@ class OMXPlayer
       if stderr
         @logger.writeLog('PLAYER003', { error: stderr })
       else
-        callback(stdout)
+        deferred.resolve(stdout)
+
+    deferred.promise
 
 module.exports = OMXPlayer
