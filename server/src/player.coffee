@@ -15,7 +15,7 @@ class OMXPlayer
 
 
   play: (file) ->
-    logger.writeLog('PLAYER001', { file: file })
+    @logger.writeLog('PLAYER001', { file: file })
     if @state == state.idle
       @initPlayer(file)
 
