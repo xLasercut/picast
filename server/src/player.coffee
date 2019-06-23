@@ -49,7 +49,7 @@ class OMXPlayer
       callback(output)
 
   volume: (callback) ->
-    @_sendDbusControl dbus.volume, null (data) =>
+    @_sendDbusControl dbus.volume, null, (data) =>
       callback(data)
 
   _sendKey: (key) ->
