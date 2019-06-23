@@ -40,8 +40,8 @@ class OMXPlayer
     @state = state.idle
 
   status: (callback) ->
-    @_sendDbusControl dbus.status, null, (callback) =>
-      callback(callback.split('\n'))
+    @_sendDbusControl dbus.status, null, (data) =>
+      callback(data.split('\n'))
 
   _sendKey: (key) ->
     @logger.writeLog('PLAYER002', { key: key })
