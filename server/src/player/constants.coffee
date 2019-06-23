@@ -13,7 +13,8 @@ controls = {
 
 dbus = {
   seek: 'setposition',
-  status: 'status'
+  status: 'status',
+  volume: 'volume'
 }
 
 module.exports = {

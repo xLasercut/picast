@@ -31,3 +31,7 @@ io.on 'connect', (socket) =>
   socket.on 'PLAYER_STATUS', (_data, callback) =>
     player.status (data) =>
       callback(data)
+
+  socket.on 'PLAYER_VOLUME', (_data, callback) =>
+    player.volume (data) =>
+      callback(data)

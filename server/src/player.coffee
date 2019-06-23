@@ -48,6 +48,10 @@ class OMXPlayer
           output[rowArray[0]] = rowArray[1].trim()
       callback(output)
 
+  volume: (callback) ->
+    @_sendDbusControl dbus.volume, null (data) =>
+      callback(data)
+
   _sendKey: (key) ->
     @logger.writeLog('PLAYER002', { key: key })
     if !@player or @state == state.idle
