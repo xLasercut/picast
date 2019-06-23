@@ -1,10 +1,11 @@
 childProcess = require 'child_process'
 EventEmitter = require 'events'.EventEmitter
 
-opts = [ '-o hdmi' ]
+{ options, state } = require './player/map.coffee'
 
 
 class OMXPlayer extends EventEmitter
   constructor: () ->
     super()
-
+    @player = childProcess.execSync("omxplayer #{options}")
+    @state = state.idle
