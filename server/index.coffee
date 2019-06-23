@@ -27,3 +27,8 @@ io.on 'connect', (socket) =>
 
   socket.on 'PLAY_PAUSE', () =>
     player.playPause()
+
+  socket.on 'PLAYER_STATUS', (_data, callback) =>
+    player.status()
+    .then (status) =>
+      callback(status)

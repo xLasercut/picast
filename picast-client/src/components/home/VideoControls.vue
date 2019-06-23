@@ -2,7 +2,7 @@
   <v-layout justify-center wrap>
     <v-flex xs12 class="text-xs-center">
       <control-btn color="primary" :disabled="disabled">mdi-play</control-btn>
-      <control-btn color="warning" :disabled="disabled">mdi-pause</control-btn>
+      <control-btn color="warning" :disabled="disabled" @click="pause()">mdi-pause</control-btn>
       <control-btn color="error" :disabled="disabled" @click="stop()">mdi-stop</control-btn>
       <control-btn color="primary" :disabled="disabled">mdi-skip-previous</control-btn>
       <control-btn color="primary" :disabled="disabled">mdi-skip-next</control-btn>
@@ -21,4 +21,7 @@
     methods:
       stop: () ->
         this.$socket.emit('STOP_VIDEO')
+      pause: () ->
+        this.$socket.emit 'VIDEO_STATUS', null, (callback) =>
+          console.log(callback)
 </script>

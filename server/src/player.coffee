@@ -1,7 +1,10 @@
 { exec } = require 'child_process'
+path = require 'path'
+q = require 'q'
 
 { options, state, controls } = require './player/constants.coffee'
 
+controlFile = path.join(__dirname, 'player', 'dbuscontrol.sh')
 
 class OMXPlayer
   constructor: (logger) ->
@@ -49,5 +52,15 @@ class OMXPlayer
     @player = null
     @file = null
     @state = state.idle
+
+  status: () ->
+    deferred = q.defer()
+    exec "#{controlFile} status", (err, stdout, stderr) =>
+      if err
+        q.reject(err)
+      else
+        q.resolve(stdout)
+
+    return deferred.promise
 
 module.exports = OMXPlayer
