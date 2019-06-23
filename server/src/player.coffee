@@ -56,6 +56,9 @@ class OMXPlayer
   status: () ->
     deferred = q.defer()
     exec "#{controlFile} status", (err, stdout, stderr) =>
+      console.log(err)
+      console.log(stdout)
+      console.log(stderr)
       if err
         q.reject(err)
       else
