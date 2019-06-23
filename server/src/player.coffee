@@ -2,7 +2,7 @@
 path = require 'path'
 q = require 'q'
 
-{ options, state, controls } = require './player/constants.coffee'
+{ options, state, controls, dbus } = require './player/constants.coffee'
 
 controlFile = path.join(__dirname, 'player', 'dbuscontrol.sh')
 
@@ -20,33 +20,19 @@ class OMXPlayer
     @file = file
 
   stop: () ->
-    @sendKey(controls.stop)
+    @_sendKey(controls.stop)
     @resetPlayer()
 
 
   playPause: () ->
-    @sendKey(controls.pause)
+    @_sendKey(controls.pause)
     if @state == state.playing
       @state = state.paused
     else if @state == state.paused
       @state = state.playing
 
-  sendKey: (key) ->
-    @logger.writeLog('PLAYER002', { key: key })
-    if !@player or @state == state.idle
-      return false
-
-    @player.stdin.write(key)
-
-  seek: (position) ->
-    if !@file
-      return false
-
-    file = @file
-    if @player or @state != state.idle
-      @stop()
-
-    @player = exec("omxplayer #{options} #{file}")
+  seek: (position, callback) ->
+    @_sendDbusControl(dbus.seek, position, callback)
 
   resetPlayer: () ->
     @player = null
@@ -54,6 +40,26 @@ class OMXPlayer
     @state = state.idle
 
   status: (callback) ->
-    exec("#{controlFile} status", callback)
+    @_sendDbusControl dbus.status, null, (callback) =>
+      callback(callback.split('\n'))
+
+  _sendKey: (key) ->
+    @logger.writeLog('PLAYER002', { key: key })
+    if !@player or @state == state.idle
+      return false
+
+    @player.stdin.write(key)
+
+  _sendDbusControl: (command, value, callback) ->
+    if value
+      cmd = "#{controlFile} #{command} #{value}"
+    else
+      cmd = "#{controlFile} #{command}"
+
+    exec cmd, (err, stdout, stderr) =>
+      if err
+        callback(err)
+      else
+        callback(stdout)
 
 module.exports = OMXPlayer

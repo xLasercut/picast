@@ -11,8 +11,13 @@ controls = {
   pause: 'p'
 }
 
+dbus = {
+  seek: 'setposition'
+}
+
 module.exports = {
   options,
   state,
-  controls
+  controls,
+  dbus
 }
