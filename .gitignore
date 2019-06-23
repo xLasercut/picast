@@ -37,3 +37,4 @@ yarn-error.log*
 *.sw*
 
 !.gitkeep
+server/logs/*
