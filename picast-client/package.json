@@ -1,0 +1,27 @@
+{
+  "name": "picast-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:e2e": "vue-cli-service test:e2e"
+  },
+  "dependencies": {
+    "@mdi/font": "^3.7.95",
+    "roboto-fontface": "^0.10.0",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3",
+    "vue-socket.io-extended": "^3.2.1",
+    "vuetify": "^1.5.16",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-e2e-cypress": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
+    "coffee-loader": "^0.9.0",
+    "coffeescript": "^2.3.2",
+    "vue-cli-plugin-coffee": "^0.1.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
