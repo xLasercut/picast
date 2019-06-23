@@ -23,6 +23,7 @@ class OMXPlayer
     @sendKey(controls.stop)
 
   sendKey: (key) ->
+    console.log(@player)
     if !@player or @state == state.idle
       return false
 
