@@ -1,12 +1,10 @@
-execSync = require 'child_process'.execSync
-EventEmitter = require 'events'.EventEmitter
+{ execSync } = require 'child_process'
 
 { options, state } = require './player/constants.coffee'
 
 
-class OMXPlayer extends EventEmitter
+class OMXPlayer
   constructor: (logger) ->
-    super()
     @logger = logger
     @player = null
     @state = state.idle
@@ -20,3 +18,6 @@ class OMXPlayer extends EventEmitter
     logger.writeLog('PLAYER001', { file: file })
     if @state == state.idle
       @initPlayer(file)
+
+
+module.exports = OMXPlayer
