@@ -62,8 +62,8 @@ class OMXPlayer
       cmd = "#{controlFile} #{command}"
 
     exec cmd, (err, stdout, stderr) =>
-      if err
-        callback(err)
+      if stderr
+        @logger.writeLog('PLAYER003', { error: stderr })
       else
         callback(stdout)
 
