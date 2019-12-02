@@ -36,5 +36,7 @@ yarn-error.log*
 *.sln
 *.sw*
 
+server/logs
+server/dist
+
 !.gitkeep
-server/logs/*
