@@ -10,14 +10,33 @@ export default new Vuetify({
         },
         themes: {
             light: {
-                primary: 'blue',
-                secondary: '#424242',
-                accent: '#82B1FF',
-                error: '#FF5252',
-                info: '#2196F3',
-                success: '#4CAF50',
-                warning: '#FFC107'
+                warning: '#faa61a',
+                success: '#3fb581',
+                error: '#f04740',
+                primary: '#7289da',
+                background: {
+                    base: '#ffffff',
+                    darken1: '#f2f3f5',
+                    darken2: '#fafafa',
+                    darken3: '#e3e5e8'
+                },
+                info: '#8e9297',
+                accent: '#7289da'
             },
+            dark: {
+                warning: '#faa61a',
+                success: '#3fb581',
+                error: '#f04740',
+                primary: '#7289da',
+                background: {
+                    base: '#36393f',
+                    darken1: '#2f3136',
+                    darken2: '#292b2f',
+                    darken3: '#202225'
+                },
+                info: '#8e9297',
+                accent: '#7289da'
+            }
         },
     },
 })

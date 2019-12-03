@@ -18,3 +18,17 @@
         }
     })
 </script>
+
+<style>
+    .v-application {
+        background-color: var(--v-background-base) !important;
+    }
+
+    .v-sheet {
+        background-color: var(--v-background-darken1) !important;
+    }
+
+    .v-slider__thumb-container {
+        cursor: pointer;
+    }
+</style>
