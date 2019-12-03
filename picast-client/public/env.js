@@ -1,1 +1,1 @@
-const PICAST_SERVER = 'http://192.168.0.13:8000'
+const PICAST_SERVER = 'http://localhost:8000'

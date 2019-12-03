@@ -1,21 +1,29 @@
 <template>
-  <v-layout justify-center wrap>
-    <v-flex xs12>
-      <video-input></video-input>
-      <video-seek-bar></video-seek-bar>
-      <video-controls></video-controls>
-      <video-volume></video-volume>
-    </v-flex>
-  </v-layout>
+    <v-container>
+        <v-row justify="center">
+            <v-col cols="10">
+                <video-input></video-input>
+                <video-seek-bar></video-seek-bar>
+                <video-controls></video-controls>
+                <video-volume></video-volume>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
-<script lang="coffee">
-  import VideoInput from '../components/home/VideoInput.vue'
-  import VideoSeekBar from '../components/home/VideoSeekBar.vue'
-  import VideoControls from '../components/home/VideoControls.vue'
-  import VideoVolume from '../components/home/VideoVolume.vue'
+<script type="ts">
+    import {createComponent} from '@vue/composition-api'
+    import VideoInput from '@/home/VideoInput.vue'
+    import VideoControls from '@/home/VideoControls.vue'
+    import VideoSeekBar from '@/home/VideoSeekBar.vue'
+    import VideoVolume from '@/home/VideoVolume.vue'
 
-  export default
-    components: { VideoInput, VideoSeekBar, VideoControls, VideoVolume }
-
+    export default createComponent({
+        components: {
+            VideoInput,
+            VideoControls,
+            VideoSeekBar,
+            VideoVolume
+        }
+    })
 </script>
